@@ -1,16 +1,12 @@
-struct coordinates {
-    int x;
-    int y;
-};
+#pragma once
+#include "coordinates.h"
 
 class Building {
     public:
         Building(coordinates coords, int people_capacity, int car_capacity);
-
+        
         coordinates GetCoordinates() const;
-
         int GetPeopleCapacity() const;
-
         int GetCarCapacity() const;
 
     private:
