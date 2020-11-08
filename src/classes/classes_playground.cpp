@@ -1,3 +1,4 @@
+#include "Intersection.hpp"
 #include "Building.hpp"
 #include "Road.hpp"
 
@@ -15,6 +16,14 @@ int main(void) {
     coords2.y = 16;
     Building b2(coords2,100,80);
 
-    Road<Building,Building> r(b2,b1);
+    coordinates coords3;
+    coords3.x = 5;
+    coords3.y = 12;
+    Intersection i1(coords3);
+    std::cout << std::to_string(i1.GetCoordinates().x) << std::endl;
+
+    Road<Intersection,Building> r(i1,b2);
     std::cout << std::to_string(r.CalculateLength()) << std::endl;
+    
+
 }
