@@ -38,6 +38,6 @@ external
 
 # Project files
 *.sublime*
-
+*.vscode*
 # System files
 .DS_Store
