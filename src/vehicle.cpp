@@ -6,3 +6,9 @@ Vehicle::Vehicle(unsigned int height, unsigned int width, sf::Color color):
 {
   update();
 }
+
+void Vehicle:: setSize()
+{
+
+}
+

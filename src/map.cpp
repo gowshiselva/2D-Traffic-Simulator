@@ -13,7 +13,7 @@ void Map::initMap()
   create a sfml window to create the map
   */
  this->window_ = new sf::RenderWindow(sf::VideoMode(width_, height_), "SFML window");
-   
+ //this->addVehicle();
 }
 
 void Map::run()
@@ -48,6 +48,11 @@ void Map::updateSFMLEvent()
             
         }
 }
+
+/*void Map::addVehicle(const Vehicle& v)
+{
+  this->window_->draw(v);
+}*/
 Map::~Map()
 {
     delete this->window_;

@@ -52,7 +52,7 @@ endif()
 
 # Enable additional warnings and debug mode
 set (CMAKE_CXX_FLAGS "-g -W -pedantic")
-
+set(CMAKE_BUILD_TYPE Debug)
 add_executable(traffic-simulator ${SOURCES})
 target_compile_options(traffic-simulator PRIVATE -Wall -Wextra -pedantic -Werror)
 target_link_libraries(traffic-simulator  sfml-system sfml-window sfml-graphics sfml-audio )
