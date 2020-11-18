@@ -24,6 +24,5 @@ int main(void) {
 
     Road<Intersection,Building> r(i1,b2);
     std::cout << std::to_string(r.CalculateLength()) << std::endl;
-    
 
 }
