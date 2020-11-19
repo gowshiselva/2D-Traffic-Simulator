@@ -31,3 +31,7 @@ include_directories(include)
 file(GLOB SOURCES "src/*.cpp")
  
 add_executable(traffic-simulator ${SOURCES})
+
+find_package(Python3 COMPONENTS Development NumPy)
+target_include_directories(traffic-simulator PRIVATE ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
+target_link_libraries(traffic-simulator Python3::Python Python3::NumPy)
