@@ -7,13 +7,23 @@ endif()
 
 set(CMAKE_CXX_STANDARD 11)
 
-
 # Put the project early since modules might need to detect the compiler.
 project(
     "TrafficSimulator" # This will exposed as the variable PROJECT_NAME.
     VERSION 1.0 # Used for installation and defines variables PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR, PROJECT_VERSION_PATCH, and PROJECT_VERSION_TWEAK.
     LANGUAGES C CXX # Used to determine the languages to use based on file extensions
 )
+
+
+
+
+find_package(SFML 2.5.1 COMPONENTS system window graphics audio REQUIRED)
+#find_package(TGUI 0.8.3 REQUIRED)
+#find_package(pybind11 REQUIRED) 
+
+
+
+
 
 
 ############################
@@ -29,5 +39,21 @@ include_directories(include)
  
 #However, the file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "src/*.cpp")
- 
+
+#SET env
+message("THING:" $ENV{THING})
+
+
+if(DEFINED ENV{THING})
+    message(STATUS "THING environment variable defined")
+    # some more commands
+endif()
+
+
+# Enable additional warnings and debug mode
+set (CMAKE_CXX_FLAGS "-g -W -pedantic")
+
 add_executable(traffic-simulator ${SOURCES})
+target_compile_options(traffic-simulator PRIVATE -Wall -Wextra -pedantic -Werror)
+target_link_libraries(traffic-simulator  sfml-system sfml-window sfml-graphics sfml-audio )
+
