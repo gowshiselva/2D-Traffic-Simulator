@@ -10,11 +10,13 @@
 #include <iomanip>
 #include <math.h>
 
-#include "input_processing/nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 #include "amounts.h"
-#include "classes/coordinates.h"
+#include "coordinates.h"
+
+#include "input2json.hpp"
 
 #define RESIDENTIAL_PROB 60
 #define INDUSTRIAL_PROB 20
@@ -293,14 +295,14 @@ json GenerateSkeleton(int city_size, int city_density, int map_size) {
     }
 
     json output;
-    output["roads"] = roads;
+    output["main_roads"] = roads;
     output["intersections"] = intersections;
     output["step_size"] = step_size;
     output["smaller_step_size"] = smaller_step_size;
     return output;
 }
 
-int main(void) {
+void input2json(void) {
     std::srand(std::time(nullptr));  // set seed for rand function
     
     /* First read lines from input file to a vector of pairs. */
@@ -391,6 +393,7 @@ int main(void) {
                 }
 
                 building["people_capacity"] = 1000; // Provisional...
+                building["car_capacity"] = 1000; // Provisional...
                 output["buildings"].push_back(building);
 
                 // Create road connecting the building with the intersection.
@@ -400,7 +403,7 @@ int main(void) {
                 road["start_type"] = "intersection";
                 road["end_type"] = "building";
                 road_id++;
-                output["roads"].push_back(road);
+                output["side_roads"].push_back(road);
             }
         }
     }
@@ -416,7 +419,7 @@ int main(void) {
         output["passengers"].push_back(passenger);
     }
 
-    std::ofstream o("test.json");
+    std::ofstream o("input.json");
     o << std::setw(4) << output << std::endl;
     o.close();
 }

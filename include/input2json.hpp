@@ -1,0 +1,1 @@
+void input2json(void);
