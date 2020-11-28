@@ -8,10 +8,10 @@
 using namespace std;
  int main(int argc, char *argv[])
 {
-  /* Map tf; // tf: traffic simulator
+  Map tf; // tf: traffic simulator
   tf.run();
     std::cout<<"I am traffic simulator" << std::endl;
-    return 0; */
+    return 0; 
 
   /* Open JSON file from either user command line input (e.g. ./traffic-simulator-main "my_json_city.json")
      or if no user input generate a new json file from the src/input_file.txt file. */

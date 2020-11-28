@@ -12,7 +12,7 @@
 
 #include "input2json.hpp"
 
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 using json = nlohmann::json;
 
 #include "coordinates.h"
@@ -68,7 +68,7 @@ City json2city(bool user_input, std::string json_user_input) {
         for(auto building: buildings) {
             if(building->GetId() == passenger["home"]) {
                 home = building;
-                building.IncrementPeopleAmount();
+                building->IncrementPeopleAmount();
             }
             if(building->GetId() == passenger["workplace"]) {
                 workplace = building;

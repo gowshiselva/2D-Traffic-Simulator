@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <math.h>
 
-#include <nlohmann/json.hpp>
+#include "json.hpp"
 using json = nlohmann::json;
 
 #include "amounts.h"
@@ -105,7 +105,7 @@ std::string ChooseDirection(json intersection) {
 
 int ChooseRandom(std::vector<int> buildings) {
     int rand = static_cast<int>(std::floor(RandomNumberGenerator()*buildings.size()));
-    if(rand>=buildings.size()) {
+    if(rand>=static_cast<int>(buildings.size())) {
         rand = static_cast<int>(buildings.size()-1);
     }
     return buildings[rand];
@@ -113,7 +113,7 @@ int ChooseRandom(std::vector<int> buildings) {
 
 int ChooseRandomIndexFromJsonArray(json json_array) {
     int rand = static_cast<int>(std::floor(RandomNumberGenerator()*json_array.size()));
-    if(rand>=json_array.size()) {
+    if(rand>=static_cast<int>(json_array.size())) {
         rand = static_cast<int>(json_array.size()-1);
     }
     return rand;
@@ -130,6 +130,7 @@ int ChooseRandomNonfullIntersection(json intersections) {
             return i;
         }
     }
+    return -1;
 }
 
 int CalculateMapSize(int density,int city_size) {
@@ -189,7 +190,7 @@ coordinates GenerateBuildingCoordinates(int x, int y, std::string direction, int
     return coords;
 }
 
-json GenerateSkeleton(int city_size, int city_density, int map_size) {
+json GenerateSkeleton(int city_size, int map_size) {
     int intersections_amount = city_size;
     int step_size = map_size/intersections_amount;
     json intersection;
@@ -207,8 +208,17 @@ json GenerateSkeleton(int city_size, int city_density, int map_size) {
     intersection["road_directions"]["w"] = 0;
     intersections.push_back(intersection);
 
-    while (intersections.size() < intersections_amount) {
-        json& existing_intersection = intersections[ChooseRandomNonfullIntersection(intersections)];
+    while (static_cast<int>(static_cast<int>(intersections.size())) < intersections_amount) {
+        int existing_intersection_index = ChooseRandomNonfullIntersection(intersections);
+        try {
+            if (existing_intersection_index < 0) {
+                throw (existing_intersection_index);
+            }
+        }
+        catch (int index) {
+            std::cout << "No empty existing intersection found, that is an error.\n" << std::endl;
+        } 
+        json& existing_intersection = intersections[existing_intersection_index];
 
         std::string direction = ChooseDirection(existing_intersection);
         existing_intersection["road_directions"][direction] = 1;
@@ -364,7 +374,7 @@ void input2json(void) {
     int map_size = CalculateMapSize(amounts_struct.density, amounts_struct.city_size);
 
     /* Create JSON here. */
-    json output = GenerateSkeleton(amounts_struct.city_size, amounts_struct.density, map_size);
+    json output = GenerateSkeleton(amounts_struct.city_size, map_size);
     json building;
     json road;
     coordinates coords;

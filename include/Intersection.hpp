@@ -8,6 +8,6 @@ class Intersection {
         coordinates GetCoordinates() const;
 
     private:
-        coordinates coordinates_;
         int id_;
+        coordinates coordinates_;
 };
