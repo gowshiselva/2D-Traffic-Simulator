@@ -2,6 +2,10 @@
 #include "coordinates.h"
 #include <cmath>
 #include <memory>
+#include "Building.hpp"
+
+class Intersection;
+
 
 /* template <typename T1, typename T2>
 class Road {
