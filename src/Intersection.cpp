@@ -18,9 +18,9 @@ std::vector<Intersection> Intersection::GetNeighbors(std::vector<MainRoad> main_
     std::vector<Intersection> neighbors;
     for(auto road: main_roads) {
         if (road.GetStart().GetId() == GetId()) {
-            neighbors.push_back(road.GetStart());
-        } else if(road.GetEnd().GetId() == GetId()) {
             neighbors.push_back(road.GetEnd());
+        } else if(road.GetEnd().GetId() == GetId()) {
+            neighbors.push_back(road.GetStart());
         }
     }
     return neighbors;
