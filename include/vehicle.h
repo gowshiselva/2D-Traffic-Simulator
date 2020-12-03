@@ -8,7 +8,7 @@ class Vehicle:public sf::Shape
     public: 
     // color has to be defined as sf:: data e.g sf::Color::Blue
     Vehicle(unsigned int height=10, unsigned int width=10, sf::Color color=sf::Color::Blue);
-    void setSize();
+    //void setSize();
     void setColor();
     bool destinationReached();
 
