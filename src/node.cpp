@@ -16,14 +16,14 @@ bool Node::operator==(Node& a)
 }
 
 
-float Node::findDistance(const Node& other) 
+float Node::findDistance(const Node& other) const
 {   
     float x=other.current_->x -this->current_->x;
     float y=other.current_->y- this->current_->y;
 
     return std::sqrt(std::pow(x,2)+ std::pow(y,2));
 }
-float Node::findDistance(Node& other) 
+float Node::findDistance(Node& other) const
 {   
     float x=other.current_->x -this->current_->x;
     float y=other.current_->y- this->current_->y;

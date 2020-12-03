@@ -17,10 +17,10 @@ class Node{
     public:
         Node();
         Node(Point* point);
-        Node(const Node& node); // copy constructor
-        Node &operator=(const Node& node); // copy assignment
-        Node(Node && node); // move constructor
-        Node &operator=(Node && node); // move assignment
+        //Node(const Node& node); // copy constructor
+      //  Node &operator=(const Node& node); // copy assignment
+       // Node(Node && node); // move constructor
+      //  Node &operator=(Node && node); // move assignment
         bool operator==(Node& a);
         float h_value = std::numeric_limits<float>::max();
         float g_value = 0.0;
@@ -28,8 +28,8 @@ class Node{
        // mutable std::vector<std::shared_ptr<Node>> neighbors_;
 
         //void findNeighbours();// find neighbout nodes
-        float findDistance(const Node& other);
-        float findDistance(Node& other); // find distance between two points
+        float findDistance(const Node& other) const;
+        float findDistance(Node& other) const; // find distance between two points
         std::vector<Node> neighbors;
         Node * parent = nullptr;
         Point* next_;

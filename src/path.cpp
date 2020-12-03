@@ -23,15 +23,15 @@ void Path::AStarSearch(Node &curr,  Node &dest)
   if (curr == dest)
         return;
   std::sort(curr.neighbors.begin(), curr.neighbors.end(), [dest, curr](Node a, Node b){
-    
+
       auto d1=curr.findDistance(a)+ a.findDistance(dest);
-      auto d2= curr.findDistance(b)+ b.findDistance(dest);
+      auto d2= curr.findDistance(b)+ b.findDistance(dest);   
       return d1<d2;
       });
 
-    for (auto ind =0 ; ind < curr.neighbors.size(); ++ind)
+    for (size_t ind =0 ; ind <= curr.neighbors.size(); ++ind)
     {
-         search_AStar(curr.neighbors[ind], dest, visited, path);
+         AStarSearch(curr.neighbors[ind], dest);
     }
    if (dest.visited)
    {
