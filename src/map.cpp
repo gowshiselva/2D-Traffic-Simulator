@@ -3,9 +3,9 @@
 #include <memory.h>
 #include <stdio.h>
 #include <iostream>
-//#include "matplotlibcpp.h"
+#include "matplotlibcpp.h"
 
-//namespace plt = matplotlibcpp;
+namespace plt = matplotlibcpp;
 Map::Map(unsigned int width, unsigned int height, std::string message):width_(width), height_(height), message_(message)
 {
     this->initMap();
@@ -88,8 +88,8 @@ void Map::updateSFMLEvent()
                             }else if(road.getFillColor() == sf::Color(100, 50, 250)){
                                 road.setFillColor(sf::Color(250, 0, 0));
                             }
-                            //plt::plot(road.GetStatistics());
-                            //plt::show();
+                            plt::plot(road.GetStatistics());
+                            plt::show();
                             
                         }   
                     }
