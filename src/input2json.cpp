@@ -44,7 +44,7 @@ float RandomNumberGenerator() {
 
 int GetRoadStatus(int x, int y, std::string direction, int map_size, int step_size) { // 0...free, 1...occupied, 2...not available
     if (direction == "n") {
-        if (y + step_size >= map_size) {
+        if (y - step_size < 0) {
             return 2;
         }
     } else if (direction == "e") {
@@ -52,7 +52,7 @@ int GetRoadStatus(int x, int y, std::string direction, int map_size, int step_si
             return 2;
         }
     } else if (direction == "s") {
-        if (y - step_size < 0) {
+        if (y + step_size >= map_size) {
             return 2;
         }
     } else {
@@ -75,9 +75,9 @@ int StepX(std::string direction, int x, int step_size) {
 
 int StepY(std::string direction, int y, int step_size) {
     if(direction == "n") {
-        return(y+step_size);
-    } else if(direction == "s") {
         return(y-step_size);
+    } else if(direction == "s") {
+        return(y+step_size);
     } else {
         return(y);
     }
@@ -136,7 +136,7 @@ int ChooseRandomNonfullIntersection(json intersections) {
 int CalculateMapSize(int density,int city_size) {
     /* City is always square shaped, here we calculate the size of the side of the square. */
     int map_size = 10+city_size;
-    map_size = static_cast<int>(std::round(map_size*(50-density/2)));
+    map_size = static_cast<int>(std::round(map_size*(60-density/2)));
     return(map_size);
 }
 
@@ -176,13 +176,13 @@ coordinates GenerateBuildingCoordinates(int x, int y, std::string direction, int
     coordinates coords;
     if (direction == "n") {
         coords.x = x;
-        coords.y = y+step_size;
+        coords.y = y-step_size;
     } else if (direction == "e") {
         coords.x = x+step_size;
         coords.y = y;
     } else if (direction == "s") {
         coords.x = x;
-        coords.y = y-step_size;
+        coords.y = y+step_size;
     } else {
         coords.x = x-step_size;
         coords.y = y;
@@ -230,15 +230,29 @@ json GenerateSkeleton(int city_size, int map_size) {
         int new_x = StepX(direction, existing_intersection["coordinates"]["x"], step_size);
         int new_y = StepY(direction, existing_intersection["coordinates"]["y"], step_size);
         bool occupied = false;
-        for(auto intersect: intersections) {
+        int i = 0;
+        for (auto it = intersections.begin(); it != intersections.end(); ++it, ++i) {
+            auto & intersect = *it;
+
             if(intersect["coordinates"]["x"] == new_x && intersect["coordinates"]["y"] == new_y) {
                 occupied = true;
                 base_road["end_x"] = intersect["coordinates"]["x"];
                 base_road["end_y"] = intersect["coordinates"]["y"];
                 base_road["end"] = intersect["id"];
+                intersections[i]["road_directions"][direction] = 1;
                 break;
             }
         }
+        /* for(auto intersect: intersections) {
+            if(intersect["coordinates"]["x"] == new_x && intersect["coordinates"]["y"] == new_y) {
+                occupied = true;
+                base_road["end_x"] = intersect["coordinates"]["x"];
+                base_road["end_y"] = intersect["coordinates"]["y"];
+                base_road["end"] = intersect["id"];
+                
+                break;
+            }
+        } */
 
         if(!occupied) {
             intersection["id"] = intersections.size();
@@ -279,15 +293,15 @@ json GenerateSkeleton(int city_size, int map_size) {
         intersection["coordinates"]["y"] = y;
 
         if(base_road["start_x"] == base_road["end_x"]) {
-            intersection["road_directions"]["n"] = GetRoadStatus(x, y, "n", map_size, smaller_step_size);
-            intersection["road_directions"]["e"] = 1;
-            intersection["road_directions"]["s"] = GetRoadStatus(x, y, "s", map_size, smaller_step_size);
-            intersection["road_directions"]["w"] = 1;
-        } else {
             intersection["road_directions"]["n"] = 1;
             intersection["road_directions"]["e"] = GetRoadStatus(x, y, "e", map_size, smaller_step_size);
             intersection["road_directions"]["s"] = 1;
             intersection["road_directions"]["w"] = GetRoadStatus(x, y, "w", map_size, smaller_step_size);
+        } else {
+            intersection["road_directions"]["n"] = GetRoadStatus(x, y, "n", map_size, smaller_step_size);
+            intersection["road_directions"]["e"] = 1;
+            intersection["road_directions"]["s"] = GetRoadStatus(x, y, "s", map_size, smaller_step_size);
+            intersection["road_directions"]["w"] = 1;
         }
         intersections.push_back(intersection);
         road1["id"] = static_cast<int>(base_road["id"])*2;
@@ -317,7 +331,7 @@ void input2json(void) {
     
     /* First read lines from input file to a vector of pairs. */
     std::ifstream input_file_stream;
-    input_file_stream.open("input_file.txt", std::ios::in);
+    input_file_stream.open("../traffic-sim-2020-1/src/input_file.txt", std::ios::in);
     std::vector<std::pair<std::string, int>> lines;
     std::string line;
     std::string line_str;
@@ -363,10 +377,12 @@ void input2json(void) {
             }
             amounts_struct.city_size = amount;
         } else if(object=="Passengers" || object=="passengers") {
-            amounts_struct.passengers = amount;
-            if(amount > 10000) {
+            if(amount <= 0) {
+                amount = 1; 
+            } else if(amount > 10000) {
                 amount = 10000;
             }
+            amounts_struct.passengers = amount;
         }
     }
 
