@@ -3,6 +3,9 @@
 #include <memory.h>
 #include <stdio.h>
 #include <iostream>
+//#include "matplotlibcpp.h"
+
+//namespace plt = matplotlibcpp;
 Map::Map(unsigned int width, unsigned int height, std::string message):width_(width), height_(height), message_(message)
 {
     this->initMap();
@@ -85,8 +88,8 @@ void Map::updateSFMLEvent()
                             }else if(road.getFillColor() == sf::Color(100, 50, 250)){
                                 road.setFillColor(sf::Color(250, 0, 0));
                             }
-                            std::cout << "main road clicked " << road.GetStatistics()[2] <<  std::endl;
-                            ;
+                            //plt::plot(road.GetStatistics());
+                            //plt::show();
                             
                         }   
                     }
