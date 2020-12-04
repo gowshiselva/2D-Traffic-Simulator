@@ -3,6 +3,9 @@
 #include <cmath>
 #include <memory>
 #include "Building.hpp"
+#include <SFML/Graphics.hpp>
+#include <stdio.h>
+#include <iostream>
 
 class Intersection;
 
@@ -33,11 +36,25 @@ class Road {
         std::shared_ptr<T2> end_;
 }; */
 
-class MainRoad {
+class MainRoad: public sf::RectangleShape {
     public:
 
         MainRoad(std::shared_ptr<Intersection> start, std::shared_ptr<Intersection> end)
-        : start_(start), end_(end) {}
+        :RectangleShape(sf::Vector2f(0, 0)), start_(start), end_(end) {
+            coordinates startc = start->GetCoordinates();
+            coordinates endc = end->GetCoordinates();
+            int startX = std::min(startc.x, endc.x);
+            int startY = std::min(startc.y, endc.y);
+            int endX = std::max(startc.x, endc.x);
+            int endY = std::max(startc.y, endc.y);
+            int width = endX - startX; 
+            int height = endY - startY;
+            if(width == 0) width += 5;
+            if(height == 0) height += 5;
+            this->setSize(sf::Vector2f(width, height));
+            this->setFillColor(sf::Color(100, 250, 50));
+            this->setPosition((float)startX, (float)startY);
+        }
 
         Intersection GetStart() const {
             return *start_;
@@ -45,6 +62,10 @@ class MainRoad {
 
         Intersection GetEnd() const {
             return *end_;
+        }
+
+        std::vector<int> GetStatistics(){
+            return std::vector<int>{1,2,3,4,3,2,1};
         }
 
         double CalculateLength() {
@@ -58,11 +79,26 @@ class MainRoad {
         std::shared_ptr<Intersection> end_;
 };
 
-class SideRoad {
+class SideRoad: public sf::RectangleShape {
     public:
 
         SideRoad(std::shared_ptr<Intersection> start, std::shared_ptr<Building> end)
-        : start_(start), end_(end) {}
+        :RectangleShape(sf::Vector2f(0, 0)), start_(start), end_(end) {
+            coordinates startc = start->GetCoordinates();
+            coordinates endc = end->GetCoordinates();
+            int startX = std::min(startc.x, endc.x);
+            int startY = std::min(startc.y, endc.y);
+            int endX = std::max(startc.x, endc.x);
+            int endY = std::max(startc.y, endc.y);
+            int width = endX - startX; 
+            int height = endY - startY;
+            if(width == 0) width += 2;
+            if(height == 0) height += 2;
+
+            this->setSize(sf::Vector2f(width, height));
+            this->setFillColor(sf::Color(250, 0, 0));
+            this->setPosition((float)startX, (float)startY);
+        }
 
         Intersection GetStart() const {
             return *start_;
