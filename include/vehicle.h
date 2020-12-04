@@ -8,8 +8,7 @@ class Vehicle:public sf::Shape
     public: 
     // color has to be defined as sf:: data e.g sf::Color::Blue
     Vehicle(unsigned int height=10, unsigned int width=10, sf::Color color=sf::Color::Blue);
-    //void setSize();
-    void setColor();
+    void setColor(color=sf::Color::Blue);
     void setSize();
     bool destinationReached();
     
@@ -24,9 +23,6 @@ class Vehicle:public sf::Shape
      sf::Color color_;
      sf::Vector2f m_size;
      bool destReached=false;
-     //route
-     //previous node
-     //current node
-     //next node
+   
     
 };

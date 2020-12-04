@@ -7,9 +7,9 @@ endif()
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SFML_INCLUDE_DIR "/home/vin/download/SFML-2.5.1-Compiled/include")
-set(SFML_LIBRARY_DIR "/home/vin/download/SFML-2.5.1-Compiled/lib")
-set(SFML_DIR "/home/vin/download/SFML-2.5.1-Compiled/lib/cmake/SFML")
+# set(SFML_INCLUDE_DIR "/home/vin/download/SFML-2.5.1-Compiled/include")
+# set(SFML_LIBRARY_DIR "/home/vin/download/SFML-2.5.1-Compiled/lib")
+# set(SFML_DIR "/home/vin/download/SFML-2.5.1-Compiled/lib/cmake/SFML")
 
 # Put the project early since modules might need to detect the compiler.
 project(
@@ -62,5 +62,5 @@ target_compile_options(traffic-simulator PRIVATE -Wall -Wextra -pedantic -Werror
 target_link_libraries(traffic-simulator sfml-system sfml-window sfml-graphics sfml-audio )
 
 find_package(Python3 COMPONENTS Development NumPy)
-target_include_directories(traffic-simulator PRIVATE ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
+target_include_directories(traffic-simulator  ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
 target_link_libraries(traffic-simulator Python3::Python Python3::NumPy)

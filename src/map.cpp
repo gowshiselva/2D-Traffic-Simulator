@@ -57,6 +57,9 @@ void Map::render()
         this->window_->draw(road);
     }
 
+    // draw vehicle
+    drawVehicle();
+    
     this->window_->display();
 
 }
@@ -100,10 +103,20 @@ void Map::updateSFMLEvent()
         }
 }
 
-/*void Map::addVehicle(const Vehicle& v)
+void Map::addVehicle(const Vehicle& v)
 {
-  this->window_->draw(v);
-}*/
+ vehicles_.push_back(v);
+}
+
+void Map::drawVehicle()
+{
+  for (auto v:vehicles_)
+  {   
+      this->window_->draw(v);
+  }
+  update();
+}
+
 Map::~Map()
 {
     delete this->window_;

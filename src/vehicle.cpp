@@ -7,6 +7,11 @@ Vehicle::Vehicle(unsigned int height, unsigned int width, sf::Color color):
   update();  
 }
 
+void Vehicle::setColor(color)
+{
+  color_=color;
+}
+
 bool Vehicle::destinationReached()
 {
   return destReached;
@@ -22,3 +27,4 @@ void Vehicle::Draw(sf::RenderTarget& window)
     Next();
     window.draw(this);
 }
+

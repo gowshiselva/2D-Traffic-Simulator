@@ -22,12 +22,11 @@ public:
     void addRectangle(sf::RectangleShape*, int, int, int, int);
     void addCity(City&);
     void makeCoordinates(); // divide the map into squares and derive coordinates
-    //void closeMap();
-    //void removeCar();
-    //void updateMap();
+    
 
-    //void addVehicle();
-   
+    void addVehicle(const Vehicle& v);
+    void drawVehicle(sf::RenderTarget& window);
+    void drawVehicle
     ~Map();
     unsigned int width_;
     unsigned int height_;
@@ -41,10 +40,8 @@ public:
     sf::Event event_;
     sf::Clock clock_;
     float dt_;
-    std::vector<std::unique_ptr<Vehicle>> vehicles_;
-   // Vechicle v;
-  //  std::map<int, Point*> coordinates_;
-    //std::map<int car_id,std::unique_ptr<Car>> cars_; // store list of cars in the map
+    std::vector<Vehicle> vehicles_;
+   
 };
 
 #endif
