@@ -10,9 +10,10 @@ class Vehicle:public sf::Shape
     Vehicle(unsigned int height=10, unsigned int width=10, sf::Color color=sf::Color::Blue);
     //void setSize();
     void setColor();
+    void setSize();
     bool destinationReached();
-
-    //virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    
+    virtual void draw(sf::RenderTarget& target) const;
     void updatePosition();
 
     private:
