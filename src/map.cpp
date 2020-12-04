@@ -23,7 +23,7 @@ void Map::initMap()
     rectangle->setFillColor(sf::Color(100, 250, 50));
     rectangle->setPosition(5.f, 5.f);
     this->roads_.push_back(rectangle);
-   
+    //this->addVehicle();
 }
 
 void Map::run()
@@ -85,6 +85,11 @@ void Map::updateSFMLEvent()
             
         }
 }
+
+/*void Map::addVehicle(const Vehicle& v)
+{
+  this->window_->draw(v);
+}*/
 Map::~Map()
 {
     delete this->window_;
