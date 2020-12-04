@@ -7,6 +7,10 @@ endif()
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(SFML_INCLUDE_DIR "/home/vin/download/SFML-2.5.1-Compiled/include")
+set(SFML_LIBRARY_DIR "/home/vin/download/SFML-2.5.1-Compiled/lib")
+set(SFML_DIR "/home/vin/download/SFML-2.5.1-Compiled/lib/cmake/SFML")
+
 # Put the project early since modules might need to detect the compiler.
 project(
     "TrafficSimulator" # This will exposed as the variable PROJECT_NAME.
