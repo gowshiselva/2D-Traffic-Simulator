@@ -25,6 +25,7 @@ public:
     private:
     //std::unique_ptr<sf::RenderWindow> window_;
     sf::RenderWindow *window_;
+    std::vector<sf::RectangleShape*> roads_;
     sf::Event event_;
     sf::Clock clock_;
     float dt_;
