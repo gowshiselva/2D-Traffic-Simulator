@@ -9,7 +9,6 @@ using namespace std;
  int main(int argc, char *argv[])
 {
   Map tf; // tf: traffic simulator
-  tf.run();
     
    
 
@@ -23,6 +22,8 @@ using namespace std;
   } else {
     city = json2city(false, "");
   }
+  tf.addCity(city);
+  tf.run();
 
   /* Main loop. */
   int time = 0; // The time in the city in minutes.

@@ -7,6 +7,7 @@
 #include <memory.h>
 #include <map>
 #include <node.hpp>
+#include <City.hpp>
 
 class Map 
 {
@@ -18,6 +19,7 @@ public:
     void run();
     void update();
     void updateSFMLEvent();
+    void addCity(City&);
     void makeCoordinates(); // divide the map into squares and derive coordinates
     //void closeMap();
     //void removeCar();
@@ -33,6 +35,7 @@ public:
     //std::unique_ptr<sf::RenderWindow> window_;
     sf::RenderWindow *window_;
     std::vector<sf::RectangleShape*> roads_;
+    City city_;
     sf::Event event_;
     sf::Clock clock_;
     float dt_;
