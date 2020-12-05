@@ -158,6 +158,18 @@ std::string GenerateBuildingType(int building_number) {
     }
 }
 
+std::string ReverseDirection(std::string direction) {
+    if (direction == "n") {
+        return "s";
+    } else if (direction == "s") {
+        return "n";
+    } else if (direction == "e") {
+        return "w";
+    } else {
+        return "e";
+    }
+}
+
 /* coordinates GenerateBuildingCoordinates(int city_size, int buildings_amount, int building_number) {
     int rows = static_cast<int>(std::round(sqrt(buildings_amount)));
     int cols = static_cast<int>(std::ceil(buildings_amount/rows));
@@ -239,7 +251,8 @@ json GenerateSkeleton(int city_size, int map_size) {
                 base_road["end_x"] = intersect["coordinates"]["x"];
                 base_road["end_y"] = intersect["coordinates"]["y"];
                 base_road["end"] = intersect["id"];
-                intersections[i]["road_directions"][direction] = 1;
+                std::string reverse_direction = ReverseDirection(direction);
+                intersections[i]["road_directions"][reverse_direction] = 1;
                 break;
             }
         }
