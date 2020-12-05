@@ -5,6 +5,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <map>
 #include <utility>
 #include <random>
 #include <iomanip>
@@ -168,6 +169,45 @@ std::string ReverseDirection(std::string direction) {
     } else {
         return "e";
     }
+}
+
+std::map<std::string,int> FindCoordsRange(json buildings, json intersections) {
+    int max_x = 0, max_y = 0, min_x = 99999, min_y = 99999;
+
+    for(auto b:buildings) {
+        if (b["coordinates"]["x"] > max_x) {
+            max_x = b["coordinates"]["x"];
+        } else if (b["coordinates"]["x"] < min_x) {
+            min_x = b["coordinates"]["x"];
+        }
+
+        if (b["coordinates"]["y"] > max_y) {
+            max_y = b["coordinates"]["y"];
+        } else if (b["coordinates"]["y"] < min_y) {
+            min_y = b["coordinates"]["y"];
+        }
+    }
+
+    for(auto inters:intersections) {
+        if (inters["coordinates"]["x"] > max_x) {
+            max_x = inters["coordinates"]["x"];
+        } else if (inters["coordinates"]["x"] < min_x) {
+            min_x = inters["coordinates"]["x"];
+        }
+
+        if (inters["coordinates"]["y"] > max_y) {
+            max_y = inters["coordinates"]["y"];
+        } else if (inters["coordinates"]["y"] < min_y) {
+            min_y = inters["coordinates"]["y"];
+        }
+    }
+
+    std::map<std::string,int> coordinates_ranges;
+    coordinates_ranges.insert(std::make_pair("max_x",max_x));
+    coordinates_ranges.insert(std::make_pair("min_x",min_x));
+    coordinates_ranges.insert(std::make_pair("max_y",max_y));
+    coordinates_ranges.insert(std::make_pair("min_y",min_y));
+    return(coordinates_ranges);
 }
 
 /* coordinates GenerateBuildingCoordinates(int city_size, int buildings_amount, int building_number) {
@@ -446,6 +486,20 @@ void input2json(void) {
             }
         }
     }
+
+    // Move the whole city to the 0,0 corner.
+    std::map<std::string,int> coordinates_ranges = FindCoordsRange(output["buildings"], output["intersections"]);
+
+    for (uint_fast16_t i=0; i < output["buildings"].size(); i++) {
+        output["buildings"][i]["coordinates"]["x"] = static_cast<int>(output["buildings"][i]["coordinates"]["x"]) - coordinates_ranges["min_x"]+10;
+        output["buildings"][i]["coordinates"]["y"] = static_cast<int>(output["buildings"][i]["coordinates"]["y"]) - coordinates_ranges["min_y"]+10;
+    }
+
+    for (uint_fast16_t i=0; i < output["intersections"].size(); i++) {
+        output["intersections"][i]["coordinates"]["x"] = static_cast<int>(output["intersections"][i]["coordinates"]["x"]) - coordinates_ranges["min_x"] +10;
+        output["intersections"][i]["coordinates"]["y"] = static_cast<int>(output["intersections"][i]["coordinates"]["y"]) - coordinates_ranges["min_y"] +10;
+    }
+
 
     json passenger;
     for(int i=0; i<amounts_struct.passengers; i++) {
