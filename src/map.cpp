@@ -6,10 +6,10 @@
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
-Map::Map(unsigned int width, unsigned int height, std::string message):width_(width), height_(height), message_(message)
+Map::Map(unsigned int width, unsigned int height, std::string message):width_(width), height_(height), message_(message), vehicles_()
 {
-    this->initMap();
 
+    this->initMap();
     
 }
 
@@ -31,18 +31,25 @@ void Map::addCity(City& city){
     this->city_ = city;
 }
 
-void Map::run()
-{
-  while(this->window_->isOpen())
-     {
-       this->update();
-       this->render();
-     }
+void Map::addVehicle(Vehicle* veh){
+    this->vehicles_.push_back(veh);
+}
+
+
+void Map::removeVehicle(Vehicle* veh){
+    std::vector<Vehicle*>::iterator position = std::find(this->vehicles_.begin(), this->vehicles_.end(), veh);
+    if (position != this->vehicles_.end()) // == myVector.end() means the element was not found
+        this->vehicles_.erase(position);
+}
+
+std::vector<Vehicle*> Map::getVehicles(){
+    return this->vehicles_;
 }
 
 void Map::update()
 {
     this->updateSFMLEvent();
+    this->render();
 
 }
 
@@ -56,9 +63,11 @@ void Map::render()
     for(auto road: this->city_.GetSideRoads()){
         this->window_->draw(road);
     }
-
-    // draw vehicle
-    drawVehicle();
+    
+    for (auto vehicle :this->vehicles_)
+    {   
+        this->window_->draw(*vehicle);
+    }
     
     this->window_->display();
 
@@ -103,19 +112,10 @@ void Map::updateSFMLEvent()
         }
 }
 
-void Map::addVehicle(const Vehicle& v)
-{
- vehicles_.push_back(v);
+sf::RenderWindow* Map::getWindow(){
+    return this->window_;
 }
 
-void Map::drawVehicle()
-{
-  for (auto v:vehicles_)
-  {   
-      this->window_->draw(v);
-  }
-  update();
-}
 
 Map::~Map()
 {

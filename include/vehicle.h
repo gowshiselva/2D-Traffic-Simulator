@@ -3,26 +3,27 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
-class Vehicle:public sf::Shape
+#include "coordinates.h"
+#include "Building.hpp"
+#include "Passenger.hpp"
+class Vehicle: public sf::RectangleShape
 {
     public: 
     // color has to be defined as sf:: data e.g sf::Color::Blue
-    Vehicle(unsigned int height=10, unsigned int width=10, sf::Color color=sf::Color::Blue);
-    void setColor(color=sf::Color::Blue);
-    void setSize();
-    bool destinationReached();
-    
-    virtual void draw(sf::RenderTarget& target) const;
-    void updatePosition();
+        Vehicle(coordinates coords, Passenger& passenger);
+        bool destinationReached();
+        void updatePosition();
+        coordinates GetCoordinates() const;
+        void SetDestination(Building dest);
+        Building GetDestination();
+        Passenger GetPassenger();
 
     private:
-     
-     void constructPath();
-     unsigned int height_;
-     unsigned int width_;
-     sf::Color color_;
-     sf::Vector2f m_size;
-     bool destReached=false;
+        void constructPath();
+        bool destReached=false;
+        coordinates coordinates_;
+        Building destination_;
+        Passenger passenger_;
    
     
 };
