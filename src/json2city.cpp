@@ -70,7 +70,7 @@ City json2city(bool user_input, std::string json_user_input) {
                 home = building;
                 building->IncrementPeopleAmount();
             }
-            if(building->GetId() == passenger["workplace"]) {
+            if(building->GetId() == passenger["work"]) {
                 workplace = building;
             }
             if(building->GetId() == passenger["shop"]) {

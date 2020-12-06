@@ -7,6 +7,7 @@
 #include "Intersection.hpp"
 #include "Passenger.hpp"
 #include "Road.hpp"
+#include "vehicle.h"
 
 /* template <typename T1, typename T2>
 class City {
@@ -77,5 +78,6 @@ class City {
         std::vector<Passenger> passengers_;
         std::vector<MainRoad> main_roads_;
         std::vector<SideRoad> side_roads_;
+
 
 };

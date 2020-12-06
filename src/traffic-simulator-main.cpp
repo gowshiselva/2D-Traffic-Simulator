@@ -4,6 +4,8 @@
 #include "map.h"
 
 #include "json2city.hpp"
+#include <stdio.h>
+#include <iostream>
 
 using namespace std;
  int main(int argc, char *argv[])
@@ -23,53 +25,52 @@ using namespace std;
     city = json2city(false, "");
   }
   tf.addCity(city);
-  tf.run();
 
   /* Main loop. */
   int time = 0; // The time in the city in minutes.
-
-  while(true) {
-
+  std::cout << "running simulation with " << city.GetPassengers().size() << " passengers" << std::endl;
+  while(tf.getWindow()->isOpen()) {
+    tf.update();
     for(auto passenger: city.GetPassengers()) {
       int leave_home_time = passenger.GetLeaveHomeTime();
       int leave_work_time = passenger.GetLeaveWorkTime();
       if(time == leave_home_time) {
         if(passenger.GetPosition() == "home") {
+          passenger.SetPosition("travelling");
           passenger.LeaveBuilding("home");
           /* ENTER CAR */
-          /* CAR.set_destination(passenger.GetWorkplace()) */ 
+          Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
+          car->SetDestination(passenger.GetWorkplace());
+          tf.addVehicle(car);
         } else {
           ;
         }
       } else if(time == leave_work_time) {
         if(passenger.GetPosition() == "workplace") {
           passenger.LeaveBuilding("workplace");
+          passenger.SetPosition("travelling");
           /* ENTER CAR */
-          /* CAR.set_destination(passenger.GetHome()) */ 
+          Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+          car->SetDestination(passenger.GetHome());
+          tf.addVehicle(car);
         } else {
           ;
         }
       }
     }
-
-    /* CAR LOOP HERE (pseudo):
-    for car in city.GetCars {
-      position = car.GetPosition(); 
-      destination = car.GetDestination(); 
-      
-      if destination != null {
+    
+    for(auto car: tf.getVehicles()){
+      coordinates position = car->GetCoordinates(); 
+      coordinates destination = car->GetDestination().GetCoordinates();
+      if(position.x != destination.x || position.y != destination.y) {
         // TO BE DONE: AN ALGORITHM WHICH WILL CALCULATE HOW TO GET FROM ONE POINT TO ANOTHER USING ROADS
-        car.UpdatePosition  
-      }
-
-      if position == destination {
-        car.destination = null;
-        car.passenger.LeaveCar;
-        car.passenger.EnterBuilding;
+        //car.UpdatePosition  
+      }else{
+        //car->GetPassenger().EnterBuilding("");
+        tf.removeVehicle(car);
       }
 
     }
-    */
 
     if(time>=1439) {
       time = 0;

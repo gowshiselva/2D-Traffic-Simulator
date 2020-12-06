@@ -16,18 +16,12 @@ struct Point {
 class Node{
     public:
         Node();
-        Node(Point* point);
-        //Node(const Node& node); // copy constructor
-      //  Node &operator=(const Node& node); // copy assignment
-       // Node(Node && node); // move constructor
-      //  Node &operator=(Node && node); // move assignment
+        Node(Point* point);       
         bool operator==(Node& a);
         float h_value = std::numeric_limits<float>::max();
         float g_value = 0.0;
         bool visited= false;
-       // mutable std::vector<std::shared_ptr<Node>> neighbors_;
-
-        //void findNeighbours();// find neighbout nodes
+       
         float findDistance(const Node& other) const;
         float findDistance(Node& other) const; // find distance between two points
         std::vector<Node> neighbors;
@@ -37,7 +31,6 @@ class Node{
     private:
         int index;
         Node * FindNeighbor(std::vector<int> node_indices); // pass list of nodes to find the neighbour
-        //Node * FindNeighbor(std::vector<int> nodes);
 };
 std::ostream &operator<<(std::ostream &os, const Node *node);
 
