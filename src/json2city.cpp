@@ -77,7 +77,10 @@ City json2city(bool user_input, std::string json_user_input) {
                 shop = building;
             }
         }
-        
+
+        schedule.leave_home = passenger["timeschedule"]["leave_home"];
+        schedule.leave_home = passenger["timeschedule"]["leave_work"];
+
         Passenger p(home, workplace, shop, "home", schedule);
         passengers.push_back(p);
     }
