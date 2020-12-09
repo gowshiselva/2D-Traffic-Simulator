@@ -5,6 +5,7 @@ class MainRoad;
 
 class Intersection {
     public:
+        Intersection();
         Intersection(int id, coordinates coords);
         int GetId() const;
         coordinates GetCoordinates() const;

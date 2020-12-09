@@ -2,6 +2,7 @@
 #include "Intersection.hpp"
 #include "Road.hpp"
 
+Intersection::Intersection() {}
 
 Intersection::Intersection(int id, coordinates coords)
     : id_(id), coordinates_(coords) {}

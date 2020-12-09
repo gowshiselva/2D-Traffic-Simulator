@@ -1,4 +1,6 @@
 #include "Building.hpp"
+#include "Road.hpp"
+#include "Intersection.hpp"
 
 Building::Building(int id, coordinates coords, int people_amount, int people_capacity, int car_amount, int car_capacity, std::string type)
     : id_(id), coordinates_(coords), people_amount_(people_amount), people_capacity_(people_capacity), car_amount_(car_amount), car_capacity_(car_capacity), type_(type) {}
@@ -46,6 +48,18 @@ int Building::GetCarAmount() const {
 std::string Building::GetType() const {
     return type_;
 }
+
+Intersection Building::GetNeighborIntersection(std::vector<SideRoad> side_roads) const {
+    Intersection neighbor;
+    for(auto road: side_roads) {
+        if (road.GetEnd().GetId() == GetId()) {
+            neighbor = road.GetStart();
+            break;
+        }
+    }
+    return neighbor;
+}
+
 /*-----------------------------------------------------------------------*/
 /*---------------------------DERIVED CLASSES-----------------------------*/
 /*-----------------------------------------------------------------------*/

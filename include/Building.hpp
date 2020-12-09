@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
-
+#include <vector>
 #include "coordinates.h"
+
+class Intersection;
+class SideRoad;
 
 class Building {
     public:
@@ -19,6 +22,7 @@ class Building {
         int GetCarAmount() const;
         std::string GetType() const;
         bool EnterBuilding();
+        Intersection GetNeighborIntersection(std::vector<SideRoad> side_roads) const;
 
     private:
         int id_;
