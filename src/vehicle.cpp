@@ -1,5 +1,6 @@
 #include "vehicle.h"
 #include <queue>
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "Building.hpp"
 #include "Intersection.hpp"
@@ -15,6 +16,11 @@ Vehicle::Vehicle(coordinates coords, Passenger& passenger):
 
 coordinates Vehicle::GetCoordinates() const {
     return coordinates_;
+}
+
+void Vehicle::SetCoordinates(coordinates coords) {
+    coordinates_.x = coords.x;
+    coordinates_.y = coords.y;
 }
 
 bool Vehicle::destinationReached()
@@ -34,18 +40,79 @@ Passenger Vehicle::GetPassenger(){
   return this->passenger_;
 }
 
-std::vector<Intersection> Vehicle::GetPath(Building start, Building end, std::vector<Intersection> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads) {
+std::vector<Intersection> Vehicle::GetPath() {
+  return this->path_; 
+}
+
+void Vehicle::SetPath(std::vector<Intersection> path) {
+  this->path_ = path;
+}
+
+void Vehicle::SetLastIntersection(Intersection intersection) {
+  this->last_intersection_ = intersection;
+}
+
+Intersection Vehicle::GetLastIntersection() {
+  return this->last_intersection_;
+}
+
+bool Vehicle::Drive(int speed, Intersection start, Intersection end) {
+  bool reached_end = false;
+  coordinates current_coords = this->GetCoordinates();
+  if(start.GetCoordinates().x == end.GetCoordinates().x) {
+    if(start.GetCoordinates().y > end.GetCoordinates().y) {
+      // Drive north.
+      current_coords.y -= speed;
+      if(current_coords.y <= end.GetCoordinates().y) {
+        current_coords.y = end.GetCoordinates().y;
+        reached_end = true;
+      }
+      this->SetCoordinates(current_coords);
+    } else {
+      // Drive south.
+      current_coords.y += speed;
+      if(current_coords.y >= end.GetCoordinates().y) {
+        current_coords.y = end.GetCoordinates().y;
+        reached_end = true;
+      }
+      this->SetCoordinates(current_coords);
+    }
+  } else {
+    if(start.GetCoordinates().x > end.GetCoordinates().x) {
+      // Drive west.
+      current_coords.x -= speed;
+      if(current_coords.x <= end.GetCoordinates().x) {
+        current_coords.x = end.GetCoordinates().x;
+        reached_end = true;
+      }
+      this->SetCoordinates(current_coords);
+    } else {
+      // Drive east.
+      current_coords.x += speed;
+      if(current_coords.x >= end.GetCoordinates().x) {
+        current_coords.x = end.GetCoordinates().x;
+        reached_end = true;
+      }
+      this->SetCoordinates(current_coords);
+    }
+  }
+  return reached_end;
+}
+
+std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, std::vector<std::shared_ptr<Intersection>> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads) {
   Intersection start_intersection;
   Intersection end_intersection;
   
   // First replace start and end buildings with their neighbor intersections.
   for (auto intersection: intersections) {
-    if (intersection.GetId() == start.GetNeighborIntersection(side_roads).GetId()) {
-      start_intersection= intersection;
-    } else if (intersection.GetId() == end.GetNeighborIntersection(side_roads).GetId()) {
-      end_intersection = intersection;
+    if (intersection->GetId() == start.GetNeighborIntersection(side_roads).GetId()) {
+      start_intersection= *intersection;
+    } else if (intersection->GetId() == end.GetNeighborIntersection(side_roads).GetId()) {
+      end_intersection = *intersection;
     }
   }
+
+  this->SetLastIntersection(start_intersection);
 
   // BFS with intersections as nodes.
   std::queue<std::vector<Intersection>> queue;

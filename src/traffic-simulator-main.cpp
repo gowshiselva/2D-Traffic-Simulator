@@ -26,9 +26,23 @@ using namespace std;
   }
   tf.addCity(city);
 
-  /* Main loop. */
+  /* coordinates coords;
+  coords.x = 10;
+  coords.y = 10;
+  Vehicle vehicle(coords,city.GetPassengers()[0]);
+  Building a = *(city.GetBuildings()[0]);
+  Building b = *(city.GetBuildings()[10]);
+  std::vector<Intersection> path = vehicle.GetPath(a,b, city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+
+  for(auto intersection: path) {
+    std::cout << intersection.GetCoordinates().x << "," << intersection.GetCoordinates().y << std::endl;
+  } */
+  
+
+    /* Main loop. */
   int time = 0; // The time in the city in minutes.
   std::cout << "running simulation with " << city.GetPassengers().size() << " passengers" << std::endl;
+  std::vector<Intersection> path;
   while(tf.getWindow()->isOpen()) {
     tf.update();
     for(auto passenger: city.GetPassengers()) {
@@ -41,6 +55,8 @@ using namespace std;
           /* ENTER CAR */
           Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
           car->SetDestination(passenger.GetWorkplace());
+          path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+          car->SetPath(path);
           tf.addVehicle(car);
         } else {
           ;
@@ -52,6 +68,8 @@ using namespace std;
           /* ENTER CAR */
           Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
           car->SetDestination(passenger.GetHome());
+          path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+          car->SetPath(path);
           tf.addVehicle(car);
         } else {
           ;
@@ -64,6 +82,21 @@ using namespace std;
       coordinates destination = car->GetDestination().GetCoordinates();
       if(position.x != destination.x || position.y != destination.y) {
         // TO BE DONE: AN ALGORITHM WHICH WILL CALCULATE HOW TO GET FROM ONE POINT TO ANOTHER USING ROADS
+        path = car->GetPath();
+        for(uint16_t i=0; i<path.size(); ++i) {
+          Intersection intersection = path[i];
+          if(intersection.GetId() == car->GetLastIntersection().GetId()) {
+            if(i>=path.size()-1) {
+              break;
+            }
+            Intersection next_intersection = path[i+1];
+            bool reached_next = car->Drive(1,car->GetLastIntersection(),next_intersection);
+            if (reached_next == true) {
+              car->SetLastIntersection(next_intersection);
+            }
+            break;
+          }
+        }
         //car.UpdatePosition  
       }else{
         //car->GetPassenger().EnterBuilding("");
@@ -80,6 +113,8 @@ using namespace std;
     
   }
 }
+
+
 
 
 

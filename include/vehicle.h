@@ -17,10 +17,16 @@ class Vehicle: public sf::RectangleShape
         bool destinationReached();
         void updatePosition();
         coordinates GetCoordinates() const;
+        void SetCoordinates(coordinates coords);
         void SetDestination(Building dest);
         Building GetDestination();
         Passenger GetPassenger();
-        std::vector<Intersection> GetPath(Building start, Building end, std::vector<Intersection> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads);
+        std::vector<Intersection> CalculatePath(Building start, Building end, std::vector<std::shared_ptr<Intersection>> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads);
+        void SetPath(std::vector<Intersection> path);
+        std::vector<Intersection> GetPath();
+        void SetLastIntersection(Intersection intersection);
+        Intersection GetLastIntersection();
+        bool Drive(int speed, Intersection start, Intersection end);
 
     private:
         void constructPath();
@@ -28,6 +34,8 @@ class Vehicle: public sf::RectangleShape
         coordinates coordinates_;
         Building destination_;
         Passenger passenger_;
+        std::vector<Intersection> path_;
+        Intersection last_intersection_;
    
     
 };
