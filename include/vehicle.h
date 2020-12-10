@@ -30,6 +30,7 @@ class Vehicle: public sf::RectangleShape
         bool GetDrivingFromBuilding();
         void SetStart(Building start);
         Building GetStart();
+        int GetRoad(Intersection start, Intersection end, std::vector<MainRoad> main_roads) const;
         bool Drive(int speed, Intersection start, Intersection end);
         void DriveToBuilding(int speed, Intersection start, Building end);
         void DriveFromBuilding(int speed, Building start, Intersection end);

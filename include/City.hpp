@@ -72,6 +72,15 @@ class City {
             return side_roads_;
         }
 
+        void IncrementRoadCarCounter(int road_id, int hour) {
+            for(uint16_t i=0; i<(main_roads_.size()); ++i) {
+                if(main_roads_[i].GetId() == road_id) {
+                    main_roads_[i].IncrementCarCounter(hour);
+                    break;
+                }
+            }
+        }
+
     private:
         std::vector<std::shared_ptr<Building>> buildings_;
         std::vector<std::shared_ptr<Intersection>> intersections_;

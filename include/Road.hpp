@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 class Intersection;
 class Building;
@@ -39,19 +40,22 @@ class Road {
 class MainRoad: public sf::RectangleShape {
     public:
 
-        MainRoad(std::shared_ptr<Intersection> start, std::shared_ptr<Intersection> end);
+        MainRoad(std::shared_ptr<Intersection> start, std::shared_ptr<Intersection> end, int id);
 
         Intersection GetStart() const;
 
         Intersection GetEnd() const;
-
+        int GetId() const;
         std::vector<int> GetStatistics();
-
+        std::vector<int> GetCarCounter();
+        void IncrementCarCounter(int hour);
         double CalculateLength() const;
 
     private:
         std::shared_ptr<Intersection> start_;
         std::shared_ptr<Intersection> end_;
+        int id_;
+        std::vector<int> car_counter_;
 };
 
 class SideRoad: public sf::RectangleShape {

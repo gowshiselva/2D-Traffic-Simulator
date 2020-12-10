@@ -4,14 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 #include "Road.hpp"
 #include "Building.hpp"
 #include "Intersection.hpp"
 
 
-MainRoad::MainRoad(std::shared_ptr<Intersection> start, std::shared_ptr<Intersection> end)
-        :RectangleShape(sf::Vector2f(0, 0)), start_(start), end_(end) {
+MainRoad::MainRoad(std::shared_ptr<Intersection> start, std::shared_ptr<Intersection> end, int id)
+        :RectangleShape(sf::Vector2f(0, 0)), start_(start), end_(end), id_(id), car_counter_(std::vector<int> (24)) {
             coordinates startc = start->GetCoordinates();
             coordinates endc = end->GetCoordinates();
             int startX = std::min(startc.x, endc.x);
@@ -35,6 +36,10 @@ Intersection MainRoad::GetEnd() const {
     return *end_;
 }
 
+int MainRoad::GetId() const {
+    return id_;
+}
+
 std::vector<int> MainRoad::GetStatistics(){
     return std::vector<int>{1,2,3,4,3,2,1};
 }
@@ -43,6 +48,14 @@ double MainRoad::CalculateLength() const{
     coordinates start_coords = GetStart().GetCoordinates();
     coordinates end_coords = GetEnd().GetCoordinates();
     return sqrt(pow(end_coords.x-start_coords.x,2)+pow(end_coords.y-start_coords.y,2));
+}
+
+std::vector<int> MainRoad::GetCarCounter() {
+    return car_counter_;
+}
+
+void MainRoad::IncrementCarCounter(int hour) {
+    car_counter_[hour]++;
 }
 
 

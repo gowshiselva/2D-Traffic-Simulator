@@ -62,8 +62,8 @@ using namespace std;
       if(time == leave_home_time) {
         Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
         car->SetDestination(passenger.GetWorkplace());
-        std::cout << passenger.GetHome().GetCoordinates().x << "," << passenger.GetHome().GetCoordinates().y << std::endl;
-        std::cout << car->GetDestination().GetCoordinates().x << "," << car->GetDestination().GetCoordinates().y << std::endl;
+        //std::cout << passenger.GetHome().GetCoordinates().x << "," << passenger.GetHome().GetCoordinates().y << std::endl;
+        //std::cout << car->GetDestination().GetCoordinates().x << "," << car->GetDestination().GetCoordinates().y << std::endl;
         path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
         car->SetPath(path);
         tf.addVehicle(car);
@@ -82,7 +82,7 @@ using namespace std;
       coordinates position = car->GetCoordinates();      
       coordinates destination = car->GetDestination().GetCoordinates();
       if(position.x != destination.x || position.y != destination.y) {
-        // TO BE DONE: AN ALGORITHM WHICH WILL CALCULATE HOW TO GET FROM ONE POINT TO ANOTHER USING ROADS
+        // AN ALGORITHM WHICH WILL CALCULATE HOW TO GET FROM ONE POINT TO ANOTHER USING ROADS
         //std::cout << position.x << "," << position.y << std::endl;
         //std::cout << destination.x << "," << destination.y << std::endl;
 
@@ -101,19 +101,17 @@ using namespace std;
             Intersection next_intersection = path[i+1];
             bool reached_next = car->Drive(SPEED,car->GetLastIntersection(),next_intersection);
             if (reached_next == true) {
+              int road_id = car->GetRoad(intersection, next_intersection, city.GetMainRoads());   
+              //std::cout << "id" << road_id << std::endl;          
+              int hour = static_cast<int>(std::floor(time/60));
+              //std::cout << "hour" << hour << std::endl;
+              city.IncrementRoadCarCounter(road_id,hour);
               car->SetLastIntersection(next_intersection);
             }
             break;
           }
         }
-        //car.UpdatePosition  
       }else{
-        /*if(car->GetPassenger().GetPosition() == "travelling_home") {
-          car->GetPassenger().EnterBuilding("home");
-        } else if(car->GetPassenger().GetPosition() == "travelling_to_workplace") {
-          car->GetPassenger().EnterBuilding("workplace");
-        }*/
-        
         tf.removeVehicle(car);
       }
       
@@ -121,6 +119,12 @@ using namespace std;
     
     if(time>=1439) {
       time = 0;
+      auto roads = city.GetMainRoads();
+      auto road = roads[3];
+      for(auto hour: road.GetCarCounter()) {
+        std::cout << hour << std::endl;
+      }
+      break;
       usleep(30000);
     } else {
       time++;

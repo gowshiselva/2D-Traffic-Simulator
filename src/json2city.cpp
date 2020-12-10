@@ -96,7 +96,7 @@ City json2city(bool user_input, std::string json_user_input) {
                 end = intersection;
             }
         }
-        MainRoad r(start, end);
+        MainRoad r(start, end, main_road["id"]);
         main_roads.push_back(r);
     }
 

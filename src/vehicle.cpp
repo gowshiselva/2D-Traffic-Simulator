@@ -74,6 +74,16 @@ Building Vehicle::GetStart() {
   return this->start_;
 }
 
+int Vehicle::GetRoad(Intersection start, Intersection end, std::vector<MainRoad> main_roads) const {
+  for (auto road: main_roads) {
+    if ((road.GetStart().GetId() == start.GetId() && road.GetEnd().GetId() == end.GetId()) || (road.GetEnd().GetId() == start.GetId() && road.GetStart().GetId() == end.GetId())) {
+      return road.GetId();
+    }
+  }
+  return 0;
+}
+
+
 bool Vehicle::Drive(int speed, Intersection start, Intersection end) {
   bool reached_end = false;
   coordinates current_coords = this->GetCoordinates();
@@ -235,8 +245,8 @@ std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, s
     visited.push_back(last_node);
     
     // Check if found end.
-    std::cout<< last_node.GetId() << std::endl;
-    std::cout<< end_intersection.GetId() << std::endl;
+    //std::cout<< last_node.GetId() << std::endl;
+    //std::cout<< end_intersection.GetId() << std::endl;
     if (last_node.GetId() == end_intersection.GetId()) {
       return path;
     }
