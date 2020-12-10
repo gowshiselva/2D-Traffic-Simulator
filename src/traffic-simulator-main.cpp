@@ -62,6 +62,7 @@ using namespace std;
 
       if(time == leave_home_time) {
         Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
+        car->setColor(sf::Color::Yellow);
         car->SetDestination(passenger.GetWorkplace());
         //std::cout << passenger.GetHome().GetCoordinates().x << "," << passenger.GetHome().GetCoordinates().y << std::endl;
         //std::cout << car->GetDestination().GetCoordinates().x << "," << car->GetDestination().GetCoordinates().y << std::endl;

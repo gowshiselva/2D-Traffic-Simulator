@@ -14,27 +14,27 @@ class Vehicle: public sf::RectangleShape
     public: 
     // color has to be defined as sf:: data e.g sf::Color::Blue
         Vehicle(coordinates coords, Passenger& passenger);
-        bool destinationReached();
+        bool destinationReached() const noexcept;
         void updatePosition();
         coordinates GetCoordinates() const;
         void SetCoordinates(coordinates coords);
         void SetDestination(Building dest);
-        Building GetDestination();
-        Passenger GetPassenger();
+        Building GetDestination() const;
+        Passenger GetPassenger() const;
         std::vector<Intersection> CalculatePath(Building start, Building end, std::vector<std::shared_ptr<Intersection>> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads);
         void SetPath(std::vector<Intersection> path);
-        std::vector<Intersection> GetPath();
-        void SetLastIntersection(Intersection intersection);
-        Intersection GetLastIntersection();
+        std::vector<Intersection> GetPath() const;
+        void SetLastIntersection(Intersection intersection) ;
+        Intersection GetLastIntersection() const;
         void SetDrivingFromBuilding(bool b);
-        bool GetDrivingFromBuilding();
+        bool GetDrivingFromBuilding() const;
         void SetStart(Building start);
-        Building GetStart();
+        Building GetStart() const;
         int GetRoad(Intersection start, Intersection end, std::vector<MainRoad> main_roads) const;
         bool Drive(int speed, Intersection start, Intersection end);
         void DriveToBuilding(int speed, Intersection start, Building end);
         void DriveFromBuilding(int speed, Building start, Intersection end);
-
+        void setColor(sf::Color color) noexcept;
 
     private:
         void constructPath();

@@ -1,7 +1,7 @@
 
 
 #Requirements:
-Packets required: (Install with apt-get for example)
+Packets required: (install with apt-get for example)
 ```bash
 cmake g++ libsfml-dev python3-dev python3-pip
 ```

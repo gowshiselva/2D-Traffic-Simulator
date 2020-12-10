@@ -24,7 +24,7 @@ void Vehicle::SetCoordinates(coordinates coords) {
     this->setPosition(coords.x, (coords.y));
 }
 
-bool Vehicle::destinationReached()
+bool Vehicle::destinationReached() const noexcept
 {
   return destReached;
 }
@@ -33,15 +33,15 @@ void Vehicle::SetDestination(Building dest){
   this->destination_ = dest;
 }
 
-Building Vehicle::GetDestination(){
+Building Vehicle::GetDestination() const{
   return this->destination_;
 }
 
-Passenger Vehicle::GetPassenger(){
+Passenger Vehicle::GetPassenger() const {
   return this->passenger_;
 }
 
-std::vector<Intersection> Vehicle::GetPath() {
+std::vector<Intersection> Vehicle::GetPath() const{
   return this->path_; 
 }
 
@@ -53,11 +53,11 @@ void Vehicle::SetLastIntersection(Intersection intersection) {
   this->last_intersection_ = intersection;
 }
 
-Intersection Vehicle::GetLastIntersection() {
+Intersection Vehicle::GetLastIntersection() const{
   return this->last_intersection_;
 }
 
-bool Vehicle::GetDrivingFromBuilding() {
+bool Vehicle::GetDrivingFromBuilding() const{
   return this->driving_from_building_;
 }
 
@@ -70,8 +70,13 @@ void Vehicle::SetStart(Building start) {
   this->start_ = start;
 }
 
-Building Vehicle::GetStart() {
+Building Vehicle::GetStart() const{
   return this->start_;
+}
+
+void Vehicle::setColor(sf::Color color) noexcept
+{
+  this->setFillColor(color);
 }
 
 int Vehicle::GetRoad(Intersection start, Intersection end, std::vector<MainRoad> main_roads) const {
