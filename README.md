@@ -1,10 +1,19 @@
 
 
+#Following packets are required for this program:
+cmake g++ libsfml-dev python3-dev python3-pip
+
+#Using matplotlibcpp requires matplot being installed to your python3 environment:
+
+```pip3 install matplotlib
+```
+
 #Instruction to buils
 
 ```bash
 mkdir build
-cmake..
+cd build
+cmake ..
 make
 ./traffic-simulator
 ```
