@@ -29,6 +29,11 @@ class Map
       unsigned int width_;
       unsigned int height_;
       std::string message_;
+
+      // Converts point on map to point on screen (coordinate -> pixel)
+    sf::Vector2i convertCoordinateToPixel(const sf::Vector2f &point) const { return window_->mapCoordsToPixel(point); }
+    // Converts point on screen to point on map (pixel -> coordinate)
+    sf::Vector2f convertPixelToCoordinate(const sf::Vector2i &point) const { return window_->mapPixelToCoords(point); }
   private:
     //std::unique_ptr<sf::RenderWindow> window_;
     sf::RenderWindow *window_;

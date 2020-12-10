@@ -12,8 +12,8 @@
 #include "input2json.hpp"
 #include <stdio.h>
 #include <iostream>
-
-#define SPEED 4
+#include <memory>
+#define SPEED 2
 
 using namespace std;
  int main(int argc, char *argv[])
@@ -155,6 +155,7 @@ using namespace std;
     }
     
   }
+
 }
 
 
