@@ -81,6 +81,19 @@ class City {
             }
         }
 
+        void SetPassengerPosition(int passenger_id, std::string position) {
+            for(uint16_t i=0; i<(passengers_.size()); ++i) {
+                if(passengers_[i].GetId() == passenger_id) {
+                    if(position == "arrived" && passengers_[i].GetPosition().size() > 7) {
+                        passengers_[i].SetPosition(passengers_[i].GetPosition().substr(7));
+                        break;
+                    }
+                    passengers_[i].SetPosition(position);
+                    break;
+                }
+            }
+        }
+
     private:
         std::vector<std::shared_ptr<Building>> buildings_;
         std::vector<std::shared_ptr<Intersection>> intersections_;

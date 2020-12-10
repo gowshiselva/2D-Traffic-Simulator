@@ -6,7 +6,7 @@
 
 class Passenger {
     public:
-        Passenger(/*car_,*/ std::shared_ptr<Building> home, std::shared_ptr<Building> workplace, std::shared_ptr<Building> shop, std::string position, timeschedule schedule); // also car
+        Passenger(int id, std::shared_ptr<Building> home, std::shared_ptr<Building> workplace, std::shared_ptr<Building> shop, std::string position, timeschedule schedule); // also car
         
         Building GetHome() const;
         Building GetWorkplace() const;
@@ -18,8 +18,10 @@ class Passenger {
         /*GetCar*/
         int GetLeaveHomeTime() const;
         int GetLeaveWorkTime() const;
+        int GetId() const;
 
     private:
+        int id_;
         std::shared_ptr<Building> home_;
         std::shared_ptr<Building> workplace_;          
         std::shared_ptr<Building> shop_;

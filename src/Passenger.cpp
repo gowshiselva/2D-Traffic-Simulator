@@ -1,7 +1,8 @@
 #include "Passenger.hpp"
 
-Passenger::Passenger(/*car,*/ std::shared_ptr<Building> home, std::shared_ptr<Building> workplace, std::shared_ptr<Building> shop, std::string position, timeschedule schedule)
-    : /*car_(car),*/
+Passenger::Passenger(int id, std::shared_ptr<Building> home, std::shared_ptr<Building> workplace, std::shared_ptr<Building> shop, std::string position, timeschedule schedule)
+    :
+    id_(id),
     home_(home),
     workplace_(workplace),
     shop_(shop),
@@ -28,6 +29,10 @@ std::string Passenger::GetPosition() const {
 
 void Passenger::SetPosition(std::string position) {
     position_ = position;   //"home","workplace","car"
+}
+
+int Passenger::GetId() const {
+    return id_;
 }
 
 bool Passenger::EnterBuilding(std::string building_name) {
