@@ -26,16 +26,25 @@ class Vehicle: public sf::RectangleShape
         std::vector<Intersection> GetPath();
         void SetLastIntersection(Intersection intersection);
         Intersection GetLastIntersection();
+        void SetDrivingFromBuilding(bool b);
+        bool GetDrivingFromBuilding();
+        void SetStart(Building start);
+        Building GetStart();
         bool Drive(int speed, Intersection start, Intersection end);
+        void DriveToBuilding(int speed, Intersection start, Building end);
+        void DriveFromBuilding(int speed, Building start, Intersection end);
+
 
     private:
         void constructPath();
         bool destReached=false;
         coordinates coordinates_;
         Building destination_;
+        Building start_;
         Passenger passenger_;
         std::vector<Intersection> path_;
         Intersection last_intersection_;
+        bool driving_from_building_;
    
     
 };

@@ -21,6 +21,7 @@ coordinates Vehicle::GetCoordinates() const {
 void Vehicle::SetCoordinates(coordinates coords) {
     coordinates_.x = coords.x;
     coordinates_.y = coords.y;
+    this->setPosition(coords.x, (coords.y));
 }
 
 bool Vehicle::destinationReached()
@@ -54,6 +55,23 @@ void Vehicle::SetLastIntersection(Intersection intersection) {
 
 Intersection Vehicle::GetLastIntersection() {
   return this->last_intersection_;
+}
+
+bool Vehicle::GetDrivingFromBuilding() {
+  return this->driving_from_building_;
+}
+
+
+void Vehicle::SetDrivingFromBuilding(bool b) {
+  this->driving_from_building_ = b;
+}
+
+void Vehicle::SetStart(Building start) {
+  this->start_ = start;
+}
+
+Building Vehicle::GetStart() {
+  return this->start_;
 }
 
 bool Vehicle::Drive(int speed, Intersection start, Intersection end) {
@@ -99,6 +117,84 @@ bool Vehicle::Drive(int speed, Intersection start, Intersection end) {
   return reached_end;
 }
 
+void Vehicle::DriveToBuilding(int speed, Intersection start, Building end) {
+  coordinates current_coords = this->GetCoordinates();
+  if(start.GetCoordinates().x == end.GetCoordinates().x) {
+    if(start.GetCoordinates().y > end.GetCoordinates().y) {
+      // Drive north.
+      current_coords.y -= speed;
+      if(current_coords.y <= end.GetCoordinates().y) {
+        current_coords.y = end.GetCoordinates().y;
+      }
+      this->SetCoordinates(current_coords);
+    } else {
+      // Drive south.
+      current_coords.y += speed;
+      if(current_coords.y >= end.GetCoordinates().y) {
+        current_coords.y = end.GetCoordinates().y;
+      }
+      this->SetCoordinates(current_coords);
+    }
+  } else {
+    if(start.GetCoordinates().x > end.GetCoordinates().x) {
+      // Drive west.
+      current_coords.x -= speed;
+      if(current_coords.x <= end.GetCoordinates().x) {
+        current_coords.x = end.GetCoordinates().x;
+      }
+      this->SetCoordinates(current_coords);
+    } else {
+      // Drive east.
+      current_coords.x += speed;
+      if(current_coords.x >= end.GetCoordinates().x) {
+        current_coords.x = end.GetCoordinates().x;
+      }
+      this->SetCoordinates(current_coords);
+    }
+  }
+}
+
+void Vehicle::DriveFromBuilding(int speed, Building start, Intersection end) {
+  coordinates current_coords = this->GetCoordinates();
+  if(start.GetCoordinates().x == end.GetCoordinates().x) {
+    if(start.GetCoordinates().y > end.GetCoordinates().y) {
+      // Drive north.
+      current_coords.y -= speed;
+      if(current_coords.y <= end.GetCoordinates().y) {
+        current_coords.y = end.GetCoordinates().y;
+        this->SetDrivingFromBuilding(false);
+      }
+      this->SetCoordinates(current_coords);
+    } else {
+      // Drive south.
+      current_coords.y += speed;
+      if(current_coords.y >= end.GetCoordinates().y) {
+        current_coords.y = end.GetCoordinates().y;
+        this->SetDrivingFromBuilding(false);
+      }
+      this->SetCoordinates(current_coords);
+    }
+  } else {
+    if(start.GetCoordinates().x > end.GetCoordinates().x) {
+      // Drive west.
+      current_coords.x -= speed;
+      if(current_coords.x <= end.GetCoordinates().x) {
+        current_coords.x = end.GetCoordinates().x;
+        this->SetDrivingFromBuilding(false);
+      }
+      this->SetCoordinates(current_coords);
+    } else {
+      // Drive east.
+      current_coords.x += speed;
+      if(current_coords.x >= end.GetCoordinates().x) {
+        current_coords.x = end.GetCoordinates().x;
+        this->SetDrivingFromBuilding(false);
+      }
+      this->SetCoordinates(current_coords);
+    }
+  }
+}
+
 std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, std::vector<std::shared_ptr<Intersection>> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads) {
   Intersection start_intersection;
   Intersection end_intersection;
@@ -111,8 +207,9 @@ std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, s
       end_intersection = *intersection;
     }
   }
-
+  this->SetStart(start);
   this->SetLastIntersection(start_intersection);
+  this->SetDrivingFromBuilding(true);
 
   // BFS with intersections as nodes.
   std::queue<std::vector<Intersection>> queue;

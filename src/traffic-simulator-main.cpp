@@ -1,6 +1,11 @@
 #include <iostream>
 #include <string> 
 //#include "map.h"
+
+#include <unistd.h>
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+
 #include "map.h"
 
 #include "json2city.hpp"
@@ -78,15 +83,23 @@ using namespace std;
     }
     
     for(auto car: tf.getVehicles()){
-      coordinates position = car->GetCoordinates(); 
+      coordinates position = car->GetCoordinates();      
       coordinates destination = car->GetDestination().GetCoordinates();
       if(position.x != destination.x || position.y != destination.y) {
         // TO BE DONE: AN ALGORITHM WHICH WILL CALCULATE HOW TO GET FROM ONE POINT TO ANOTHER USING ROADS
+        //std::cout << position.x << "," << position.y << std::endl;
+        //std::cout << destination.x << "," << destination.y << std::endl;
+
         path = car->GetPath();
         for(uint16_t i=0; i<path.size(); ++i) {
           Intersection intersection = path[i];
           if(intersection.GetId() == car->GetLastIntersection().GetId()) {
+            if(car->GetDrivingFromBuilding() == true) {
+              car->DriveFromBuilding(1,car->GetStart(),car->GetLastIntersection());
+              break;
+            }
             if(i>=path.size()-1) {
+              car->DriveToBuilding(1,car->GetLastIntersection(),car->GetDestination());
               break;
             }
             Intersection next_intersection = path[i+1];
@@ -102,13 +115,19 @@ using namespace std;
         //car->GetPassenger().EnterBuilding("");
         tf.removeVehicle(car);
       }
-
+      
     }
 
+    for(auto car: tf.getVehicles()){
+      std::cout << car->GetCoordinates().x << "," << car->GetCoordinates().y << std::endl;
+    }
+    
     if(time>=1439) {
       time = 0;
+      usleep(20000);
     } else {
       time++;
+      usleep(20000);
     }
     
   }
