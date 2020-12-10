@@ -9,6 +9,7 @@
 #include "map.h"
 
 #include "json2city.hpp"
+#include "input2json.hpp"
 #include <stdio.h>
 #include <iostream>
 
@@ -53,14 +54,13 @@ using namespace std;
   while(tf.getWindow()->isOpen()) {
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     tf.update();
-    for(auto passenger: city.GetPassengers()) {
-      //std::cout << passenger.GetPosition() << std::endl;
-      //std::cout << passenger.GetLeaveHomeTime() << std::endl;
-      //std::cout << passenger.GetLeaveWorkTime() << std::endl;
+    for(uint16_t j=0; j<city.GetPassengers().size(); j++) {
+      Passenger passenger = city.GetPassengers()[j];
       int leave_home_time = passenger.GetLeaveHomeTime();
       int leave_work_time = passenger.GetLeaveWorkTime();
 
       if(time == leave_home_time) {
+        city.SetPassengerPosition(passenger.GetId(), "travel_work");
         Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
         car->setColor(sf::Color::Yellow);
         car->SetDestination(passenger.GetWorkplace());
@@ -71,12 +71,32 @@ using namespace std;
         tf.addVehicle(car);
 
       } else if(time == leave_work_time) {
+        city.SetPassengerPosition(passenger.GetId(), "travel_home");
         Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
         car->SetDestination(passenger.GetHome());
         path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
         car->SetPath(path);
         tf.addVehicle(car);
 
+      } else {
+        if((passenger.GetPosition() == "work" || passenger.GetPosition() == "home") && passenger.GetShop().GetId() != passenger.GetWorkplace().GetId()) {
+          float rand = RandomNumberGenerator();
+        if (static_cast<int>(rand*1000) == 42) {
+          city.SetPassengerPosition(passenger.GetId(), "travel_shop");
+
+          Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+          if(passenger.GetPosition() == "work") {
+            car->SetDestination(passenger.GetShop());
+            path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+          } else {
+            car->SetCoordinates(passenger.GetHome().GetCoordinates());
+            car->SetDestination(passenger.GetShop());
+            path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+          }
+          car->SetPath(path);
+          tf.addVehicle(car);
+        }
+        }
       }
     }
     
@@ -114,6 +134,7 @@ using namespace std;
           }
         }
       }else{
+        city.SetPassengerPosition(car->GetPassenger().GetId(), "arrived");
         tf.removeVehicle(car);
       }
     }
@@ -126,7 +147,11 @@ using namespace std;
     std::cout << "sleeping for: " << diff << "," << sleep << std::endl;
     if(time>=1439) {
       time = 0;
+<<<<<<< HEAD
       usleep(sleep);
+=======
+      usleep(30000);
+>>>>>>> shopping
     } else {
       time++;
       std::cout << time << std::endl;

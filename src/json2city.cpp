@@ -81,7 +81,7 @@ City json2city(bool user_input, std::string json_user_input) {
         schedule.leave_home = passenger["timeschedule"]["leave_home"];
         schedule.leave_work = passenger["timeschedule"]["leave_work"];
 
-        Passenger p(home, workplace, shop, "home", schedule);
+        Passenger p(passenger["id"], home, workplace, shop, "home", schedule);
         passengers.push_back(p);
     }
 
