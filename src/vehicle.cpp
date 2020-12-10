@@ -7,11 +7,13 @@
 #include "Road.hpp"
 #include "Passenger.hpp"
 
+#define CAR_SIZE 8
+
 Vehicle::Vehicle(coordinates coords, Passenger& passenger):
-    RectangleShape(sf::Vector2f(5, 5)), coordinates_(coords), passenger_(passenger)
+    RectangleShape(sf::Vector2f(CAR_SIZE, CAR_SIZE)), coordinates_(coords), passenger_(passenger)
     {
         this->setFillColor(sf::Color(50, 50, 250));
-        this->setPosition(coords.x, (coords.y));
+        this->setPosition(coords.x-CAR_SIZE/2, coords.y-CAR_SIZE/2);
     }
 
 coordinates Vehicle::GetCoordinates() const {
@@ -21,7 +23,7 @@ coordinates Vehicle::GetCoordinates() const {
 void Vehicle::SetCoordinates(coordinates coords) {
     coordinates_.x = coords.x;
     coordinates_.y = coords.y;
-    this->setPosition(coords.x, (coords.y));
+    this->setPosition(coords.x-CAR_SIZE/2, coords.y-CAR_SIZE/2);
 }
 
 bool Vehicle::destinationReached() const noexcept

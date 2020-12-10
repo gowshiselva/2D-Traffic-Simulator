@@ -94,14 +94,8 @@ void Map::updateSFMLEvent()
                         sf::FloatRect bounds = road.getGlobalBounds();
                         if(localPosition.x > bounds.left && localPosition.x < bounds.left+bounds.width && localPosition.y > bounds.top && localPosition.y < bounds.top + bounds.height){
                             
-                            if(road.getFillColor() == sf::Color(100, 250, 50)){
-                                road.setFillColor(sf::Color(250, 250, 250));
-                            }else if(road.getFillColor() == sf::Color(250, 250, 250)){
-                                road.setFillColor(sf::Color(100, 250, 50));
-                            }else if(road.getFillColor() == sf::Color(250, 0, 0)){
-                                road.setFillColor(sf::Color(100, 50, 250));
-                            }else if(road.getFillColor() == sf::Color(100, 50, 250)){
-                                road.setFillColor(sf::Color(250, 0, 0));
+                            if(road.getFillColor() == sf::Color(255, 255, 255)){
+                                road.setFillColor(sf::Color(255, 255, 255));
                             }
                             std::vector<int> counter = road.GetCarCounter();
                             for(int h = 0; h < 24; h++){

@@ -49,8 +49,9 @@ class City {
             std::vector<std::shared_ptr<Intersection>>intersections,
             std::vector<Passenger> passengers,
             std::vector<MainRoad> main_roads,
-            std::vector<SideRoad> side_roads)
-            : buildings_(buildings), intersections_(intersections), passengers_(passengers), main_roads_(main_roads), side_roads_(side_roads) {}
+            std::vector<SideRoad> side_roads,
+            coordinates city_size)
+            : buildings_(buildings), intersections_(intersections), passengers_(passengers), main_roads_(main_roads), side_roads_(side_roads), city_size_(city_size) {}
 
         std::vector<std::shared_ptr<Building>> GetBuildings() const {
             return buildings_;
@@ -70,6 +71,10 @@ class City {
 
         std::vector<SideRoad> GetSideRoads() const {
             return side_roads_;
+        }
+        
+        coordinates GetCitySize() const {
+            return city_size_;
         }
 
         void IncrementRoadCarCounter(int road_id, int hour) {
@@ -100,6 +105,7 @@ class City {
         std::vector<Passenger> passengers_;
         std::vector<MainRoad> main_roads_;
         std::vector<SideRoad> side_roads_;
+        coordinates city_size_;
 
 
 

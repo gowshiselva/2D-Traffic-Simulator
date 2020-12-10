@@ -41,6 +41,9 @@ City json2city(bool user_input, std::string json_user_input) {
     std::vector<Passenger> passengers;
     std::vector<MainRoad> main_roads;
     std::vector<SideRoad> side_roads;
+    coordinates city_size;
+    city_size.x = json_input["city_size"]["coordinates"]["x"] ;
+    city_size.y = json_input["city_size"]["coordinates"]["y"] ;
 
     for(auto building: json_input["buildings"]) {
         coordinates coords;
@@ -120,6 +123,6 @@ City json2city(bool user_input, std::string json_user_input) {
         side_roads.push_back(r);
     }
 
-    City city(buildings,intersections,passengers,main_roads,side_roads);
+    City city(buildings,intersections,passengers,main_roads,side_roads,city_size);
     return city;
 }

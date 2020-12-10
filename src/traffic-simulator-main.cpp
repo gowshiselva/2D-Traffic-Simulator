@@ -13,15 +13,11 @@
 #include <stdio.h>
 #include <iostream>
 
-#define SPEED 2
+#define SPEED 4
 
 using namespace std;
  int main(int argc, char *argv[])
 {
-  Map tf; // tf: traffic simulator
-    
-   
-
   /* Open JSON file from either user command line input (e.g. ./traffic-simulator-main "my_json_city.json")
      or if no user input generate a new json file from the src/input_file.txt file. */
   /* From the JSON file create a city object containing all other objects (passengers, roads, etc.). */
@@ -32,6 +28,8 @@ using namespace std;
   } else {
     city = json2city(false, "");
   }
+  
+  Map tf(city.GetCitySize().x, city.GetCitySize().y, "traffic simulator"); // tf: traffic simulator
   tf.addCity(&city);
 
   /* coordinates coords;
@@ -62,7 +60,7 @@ using namespace std;
       if(time == leave_home_time) {
         city.SetPassengerPosition(passenger.GetId(), "travel_work");
         Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
-        car->setColor(sf::Color::Yellow);
+        car->setColor(sf::Color::Red);
         car->SetDestination(passenger.GetWorkplace());
         //std::cout << passenger.GetHome().GetCoordinates().x << "," << passenger.GetHome().GetCoordinates().y << std::endl;
         //std::cout << car->GetDestination().GetCoordinates().x << "," << car->GetDestination().GetCoordinates().y << std::endl;
@@ -73,6 +71,7 @@ using namespace std;
       } else if(time == leave_work_time) {
         city.SetPassengerPosition(passenger.GetId(), "travel_home");
         Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+        car->setColor(sf::Color::Blue);
         car->SetDestination(passenger.GetHome());
         path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
         car->SetPath(path);
@@ -85,6 +84,7 @@ using namespace std;
           city.SetPassengerPosition(passenger.GetId(), "travel_shop");
 
           Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+          car->setColor(sf::Color(11,111,0));
           if(passenger.GetPosition() == "work") {
             car->SetDestination(passenger.GetShop());
             path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());

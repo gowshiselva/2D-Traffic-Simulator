@@ -43,7 +43,7 @@ float RandomNumberGenerator() {
     return rand_num;
 }
 
-int GetRoadStatus(int x, int y, std::string direction, int map_size, int step_size) { // 0...free, 1...occupied, 2...not available
+/* int GetRoadStatus(int x, int y, std::string direction, int map_size, int step_size) { // 0...free, 1...occupied, 2...not available
     if (direction == "n") {
         if (y - step_size < 0) {
             return 2;
@@ -62,7 +62,7 @@ int GetRoadStatus(int x, int y, std::string direction, int map_size, int step_si
         }
     }
     return 0;
-}
+} */
 
 int StepX(std::string direction, int x, int step_size) {
     if(direction == "e") {
@@ -134,12 +134,12 @@ int ChooseRandomNonfullIntersection(json intersections) {
     return -1;
 }
 
-int CalculateMapSize(int density,int city_size) {
-    /* City is always square shaped, here we calculate the size of the side of the square. */
-    int map_size = 10+city_size;
-    map_size = static_cast<int>(std::round(map_size*(60-density/2)));
+/* int CalculateMapSize(int city_size) {
+    //int map_size = 10+city_size;
+    //map_size = static_cast<int>(std::round(map_size*(60-density/2)));
+    int map_size = 300+6*city_size;
     return(map_size);
-}
+} */
 
 std::string GenerateBuildingType(int building_number) {
     if(building_number == 0) {
@@ -242,9 +242,10 @@ coordinates GenerateBuildingCoordinates(int x, int y, std::string direction, int
     return coords;
 }
 
-json GenerateSkeleton(int city_size, int map_size) {
-    int intersections_amount = city_size;
-    int step_size = map_size/intersections_amount;
+json GenerateSkeleton(int city_size) {
+    int intersections_amount = city_size+2;
+    int step_size = static_cast<int>(std::floor(30+2000/(10+intersections_amount)));
+    std::cout << step_size << std::endl;
     json intersection;
     json intersections;
     json base_road;
@@ -252,8 +253,8 @@ json GenerateSkeleton(int city_size, int map_size) {
 
     // First create one intersection in the middle of the grid.
     intersection["id"] = 0;
-    intersection["coordinates"]["x"] = static_cast<int>(std::floor(map_size/2));
-    intersection["coordinates"]["y"] = static_cast<int>(std::floor(map_size/2));
+    intersection["coordinates"]["x"] = intersections_amount*step_size;
+    intersection["coordinates"]["y"] = intersections_amount*step_size;
     intersection["road_directions"]["n"] = 0;
     intersection["road_directions"]["e"] = 0;
     intersection["road_directions"]["s"] = 0;
@@ -311,10 +312,10 @@ json GenerateSkeleton(int city_size, int map_size) {
             intersection["id"] = intersections.size();
             intersection["coordinates"]["x"] = new_x;
             intersection["coordinates"]["y"] = new_y;
-            intersection["road_directions"]["n"] = GetRoadStatus(new_x, new_y, "n", map_size, step_size);
-            intersection["road_directions"]["e"] = GetRoadStatus(new_x, new_y, "e", map_size, step_size);
-            intersection["road_directions"]["s"] = GetRoadStatus(new_x, new_y, "s", map_size, step_size);
-            intersection["road_directions"]["w"] = GetRoadStatus(new_x, new_y, "w", map_size, step_size);
+            intersection["road_directions"]["n"] = 0;
+            intersection["road_directions"]["e"] = 0;
+            intersection["road_directions"]["s"] = 0;
+            intersection["road_directions"]["w"] = 0;
             // Correct the opposite of the direction used to create this intersection to status 1
             if (direction == "n") {
                 intersection["road_directions"]["s"] = 1;
@@ -347,13 +348,13 @@ json GenerateSkeleton(int city_size, int map_size) {
 
         if(base_road["start_x"] == base_road["end_x"]) {
             intersection["road_directions"]["n"] = 1;
-            intersection["road_directions"]["e"] = GetRoadStatus(x, y, "e", map_size, smaller_step_size);
+            intersection["road_directions"]["e"] = 0;
             intersection["road_directions"]["s"] = 1;
-            intersection["road_directions"]["w"] = GetRoadStatus(x, y, "w", map_size, smaller_step_size);
+            intersection["road_directions"]["w"] = 0;
         } else {
-            intersection["road_directions"]["n"] = GetRoadStatus(x, y, "n", map_size, smaller_step_size);
+            intersection["road_directions"]["n"] = 0;
             intersection["road_directions"]["e"] = 1;
-            intersection["road_directions"]["s"] = GetRoadStatus(x, y, "s", map_size, smaller_step_size);
+            intersection["road_directions"]["s"] = 0;
             intersection["road_directions"]["w"] = 1;
         }
         intersections.push_back(intersection);
@@ -415,14 +416,7 @@ void input2json(void) {
         object = i.first;
         amount = i.second;
         
-        if(object=="Density" || object=="density") {
-            if(amount <= 0) {
-                amount = 1; 
-            } else if(amount > 100) {
-                amount = 100;
-            }
-            amounts_struct.density = amount;
-        } else if(object=="Size" || object=="size") {
+        if(object=="Size" || object=="size") {
             if(amount <= 0) {
                 amount = 1; 
             } else if(amount > 100) {
@@ -439,11 +433,8 @@ void input2json(void) {
         }
     }
 
-    /* Calculate city size. */
-    int map_size = CalculateMapSize(amounts_struct.density, amounts_struct.city_size);
-
     /* Create JSON here. */
-    json output = GenerateSkeleton(amounts_struct.city_size, map_size);
+    json output = GenerateSkeleton(amounts_struct.city_size);
     json building;
     json road;
     coordinates coords;
@@ -491,15 +482,17 @@ void input2json(void) {
     std::map<std::string,int> coordinates_ranges = FindCoordsRange(output["buildings"], output["intersections"]);
 
     for (uint_fast16_t i=0; i < output["buildings"].size(); i++) {
-        output["buildings"][i]["coordinates"]["x"] = static_cast<int>(output["buildings"][i]["coordinates"]["x"]) - coordinates_ranges["min_x"]+10;
-        output["buildings"][i]["coordinates"]["y"] = static_cast<int>(output["buildings"][i]["coordinates"]["y"]) - coordinates_ranges["min_y"]+10;
+        output["buildings"][i]["coordinates"]["x"] = static_cast<int>(output["buildings"][i]["coordinates"]["x"]) - coordinates_ranges["min_x"]+20;
+        output["buildings"][i]["coordinates"]["y"] = static_cast<int>(output["buildings"][i]["coordinates"]["y"]) - coordinates_ranges["min_y"]+20;
     }
 
     for (uint_fast16_t i=0; i < output["intersections"].size(); i++) {
-        output["intersections"][i]["coordinates"]["x"] = static_cast<int>(output["intersections"][i]["coordinates"]["x"]) - coordinates_ranges["min_x"] +10;
-        output["intersections"][i]["coordinates"]["y"] = static_cast<int>(output["intersections"][i]["coordinates"]["y"]) - coordinates_ranges["min_y"] +10;
+        output["intersections"][i]["coordinates"]["x"] = static_cast<int>(output["intersections"][i]["coordinates"]["x"]) - coordinates_ranges["min_x"] +20;
+        output["intersections"][i]["coordinates"]["y"] = static_cast<int>(output["intersections"][i]["coordinates"]["y"]) - coordinates_ranges["min_y"] +20;
     }
 
+    output["city_size"]["coordinates"]["x"] = coordinates_ranges["max_x"]-coordinates_ranges["min_x"]+40;
+    output["city_size"]["coordinates"]["y"] = coordinates_ranges["max_y"]-coordinates_ranges["min_y"]+40;
 
     json passenger;
     for(int i=0; i<amounts_struct.passengers; i++) {

@@ -1,3 +1,2 @@
 Size 20
-Passengers 100
-Density 50
+Passengers 200
