@@ -67,6 +67,9 @@ void Map::render()
     for(auto road: this->city_->GetSideRoads()){
         this->window_->draw(road);
     }
+    for(auto building: this->city_->GetBuildings()){
+        this->window_->draw(*building);
+    }
     
     for (auto vehicle :this->vehicles_)
     {   
@@ -93,10 +96,6 @@ void Map::updateSFMLEvent()
                     for(auto road: this->city_->GetMainRoads()){
                         sf::FloatRect bounds = road.getGlobalBounds();
                         if(localPosition.x > bounds.left && localPosition.x < bounds.left+bounds.width && localPosition.y > bounds.top && localPosition.y < bounds.top + bounds.height){
-                            
-                            if(road.getFillColor() == sf::Color(255, 255, 255)){
-                                road.setFillColor(sf::Color(255, 255, 255));
-                            }
                             std::vector<int> counter = road.GetCarCounter();
                             for(int h = 0; h < 24; h++){
                                 //Lets not divide by 0

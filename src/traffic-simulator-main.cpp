@@ -139,18 +139,19 @@ using namespace std;
       }
     }
     if(time%60 == 0){
+      std::cout << "Time is: "<< time/60 << ":00" << std::endl;
       tf.incrementHoursPassed(time/60);
     }
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     long diff = 30000L-(long)std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
     long sleep = std::max(0L,diff);
-    std::cout << "sleeping for: " << diff << "," << sleep << std::endl;
     if(time>=1439) {
       time = 0;
       usleep(sleep);
+      std::cout << "a day has passed" << std::endl;
     } else {
       time++;
-      std::cout << time << std::endl;
+      //std::cout << time << std::endl;
       usleep(sleep);
     }
     

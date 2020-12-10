@@ -3,7 +3,11 @@
 #include "Intersection.hpp"
 
 Building::Building(int id, coordinates coords, int people_amount, int people_capacity, int car_amount, int car_capacity, std::string type)
-    : id_(id), coordinates_(coords), people_amount_(people_amount), people_capacity_(people_capacity), car_amount_(car_amount), car_capacity_(car_capacity), type_(type) {}
+    :RectangleShape(sf::Vector2f(10, 10)), id_(id), coordinates_(coords), people_amount_(people_amount), people_capacity_(people_capacity), car_amount_(car_amount), car_capacity_(car_capacity), type_(type) {
+        
+            this->setPosition(coords.x-5, coords.y-5);
+            this->setFillColor(sf::Color(210, 105, 30));
+    }
 
 int Building::GetId() const {
     return id_;

@@ -2,11 +2,12 @@
 #include <string>
 #include <vector>
 #include "coordinates.h"
+#include <SFML/Graphics.hpp>
 
 class Intersection;
 class SideRoad;
 
-class Building {
+class Building: public sf::RectangleShape {
     public:
         Building(int id, coordinates coords, int people_amount, int people_capacity, int car_amount, int car_capacity, std::string type);
         Building() {}
