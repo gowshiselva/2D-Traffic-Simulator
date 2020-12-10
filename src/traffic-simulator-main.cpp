@@ -147,11 +147,7 @@ using namespace std;
     std::cout << "sleeping for: " << diff << "," << sleep << std::endl;
     if(time>=1439) {
       time = 0;
-<<<<<<< HEAD
       usleep(sleep);
-=======
-      usleep(30000);
->>>>>>> shopping
     } else {
       time++;
       std::cout << time << std::endl;
