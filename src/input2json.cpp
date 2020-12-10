@@ -384,7 +384,7 @@ void input2json(void) {
     
     /* First read lines from input file to a vector of pairs. */
     std::ifstream input_file_stream;
-    input_file_stream.open("../traffic-sim-2020-1/src/input_file.txt", std::ios::in);
+    input_file_stream.open("../src/input_file.txt", std::ios::in);
     std::vector<std::pair<std::string, int>> lines;
     std::string line;
     std::string line_str;
