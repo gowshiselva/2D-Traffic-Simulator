@@ -31,7 +31,7 @@ using namespace std;
   } else {
     city = json2city(false, "");
   }
-  tf.addCity(city);
+  tf.addCity(&city);
 
   /* coordinates coords;
   coords.x = 10;
@@ -51,6 +51,7 @@ using namespace std;
   std::cout << "running simulation with " << city.GetPassengers().size() << " passengers" << std::endl;
   std::vector<Intersection> path;
   while(tf.getWindow()->isOpen()) {
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     tf.update();
     for(auto passenger: city.GetPassengers()) {
       //std::cout << passenger.GetPosition() << std::endl;
@@ -114,22 +115,21 @@ using namespace std;
       }else{
         tf.removeVehicle(car);
       }
-      
     }
-    
+    if(time%60 == 0){
+      tf.incrementHoursPassed(time/60);
+    }
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    long diff = 30000L-(long)std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count();
+    long sleep = std::max(0L,diff);
+    std::cout << "sleeping for: " << diff << "," << sleep << std::endl;
     if(time>=1439) {
       time = 0;
-      auto roads = city.GetMainRoads();
-      auto road = roads[3];
-      for(auto hour: road.GetCarCounter()) {
-        std::cout << hour << std::endl;
-      }
-      break;
-      usleep(30000);
+      usleep(sleep);
     } else {
       time++;
       std::cout << time << std::endl;
-      usleep(30000);
+      usleep(sleep);
     }
     
   }

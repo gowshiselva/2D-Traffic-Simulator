@@ -40,10 +40,6 @@ int MainRoad::GetId() const {
     return id_;
 }
 
-std::vector<int> MainRoad::GetStatistics(){
-    return std::vector<int>{1,2,3,4,3,2,1};
-}
-
 double MainRoad::CalculateLength() const{
     coordinates start_coords = GetStart().GetCoordinates();
     coordinates end_coords = GetEnd().GetCoordinates();

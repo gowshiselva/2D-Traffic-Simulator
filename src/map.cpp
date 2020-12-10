@@ -3,10 +3,10 @@
 #include <memory.h>
 #include <stdio.h>
 #include <iostream>
-//#include "matplotlibcpp.h"
+#include "matplotlibcpp.h"
 
-//namespace plt = matplotlibcpp;
-Map::Map(unsigned int width, unsigned int height, std::string message):width_(width), height_(height), message_(message), vehicles_()
+namespace plt = matplotlibcpp;
+Map::Map(unsigned int width, unsigned int height, std::string message):width_(width), height_(height), message_(message), vehicles_(), hours_passed_(std::vector<int> (24))
 {
 
     this->initMap();
@@ -26,7 +26,7 @@ void Map::initMap()
 
 
 
-void Map::addCity(City& city){
+void Map::addCity(City* city){
     //std::cout << "Adding city, roads: " << city.GetMainRoads().size() << std::endl;
     this->city_ = city;
 }
@@ -40,6 +40,10 @@ void Map::removeVehicle(Vehicle* veh){
     std::vector<Vehicle*>::iterator position = std::find(this->vehicles_.begin(), this->vehicles_.end(), veh);
     if (position != this->vehicles_.end()) // == myVector.end() means the element was not found
         this->vehicles_.erase(position);
+}
+
+void Map::incrementHoursPassed(int hour){
+    this->hours_passed_[hour] += 1;
 }
 
 std::vector<Vehicle*> Map::getVehicles(){
@@ -57,10 +61,10 @@ void Map::render()
 {
     this->window_->clear();
     
-    for(auto road: this->city_.GetMainRoads()){
+    for(auto road: this->city_->GetMainRoads()){
         this->window_->draw(road);
     }
-    for(auto road: this->city_.GetSideRoads()){
+    for(auto road: this->city_->GetSideRoads()){
         this->window_->draw(road);
     }
     
@@ -86,11 +90,10 @@ void Map::updateSFMLEvent()
                 {
                     sf::Vector2i localPosition =sf::Mouse::getPosition(*this->window_);
                     //std::cout << "the left button was pressed at "<< localPosition.x << "," <<  localPosition.y << std::endl;
-                    for(auto road: this->city_.GetMainRoads()){
+                    for(auto road: this->city_->GetMainRoads()){
                         sf::FloatRect bounds = road.getGlobalBounds();
                         if(localPosition.x > bounds.left && localPosition.x < bounds.left+bounds.width && localPosition.y > bounds.top && localPosition.y < bounds.top + bounds.height){
                             
-                            std::vector<int> stats = road.GetStatistics();
                             if(road.getFillColor() == sf::Color(100, 250, 50)){
                                 road.setFillColor(sf::Color(250, 250, 250));
                             }else if(road.getFillColor() == sf::Color(250, 250, 250)){
@@ -100,8 +103,15 @@ void Map::updateSFMLEvent()
                             }else if(road.getFillColor() == sf::Color(100, 50, 250)){
                                 road.setFillColor(sf::Color(250, 0, 0));
                             }
-                            //plt::plot(road.GetStatistics());
-                            //plt::show();
+                            std::vector<int> counter = road.GetCarCounter();
+                            for(int h = 0; h < 24; h++){
+                                //Lets not divide by 0
+                                if(hours_passed_[h] > 0){
+                                    counter[h] /= hours_passed_[h];
+                                }
+                            }
+                            plt::bar(counter);
+                            plt::show();
                             
                         }   
                     }

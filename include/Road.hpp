@@ -46,7 +46,6 @@ class MainRoad: public sf::RectangleShape {
 
         Intersection GetEnd() const;
         int GetId() const;
-        std::vector<int> GetStatistics();
         std::vector<int> GetCarCounter();
         void IncrementCarCounter(int hour);
         double CalculateLength() const;

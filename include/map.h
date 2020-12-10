@@ -18,9 +18,10 @@ class Map
       void update();
       void updateSFMLEvent();
       void addRectangle(sf::RectangleShape*, int, int, int, int);
-      void addCity(City&);
+      void addCity(City*);
       void addVehicle(Vehicle*);
       void removeVehicle(Vehicle*);
+      void incrementHoursPassed(int);
       std::vector<Vehicle*> getVehicles();
       void makeCoordinates(); // divide the map into squares and derive coordinates
       sf::RenderWindow* getWindow();
@@ -31,11 +32,12 @@ class Map
   private:
     //std::unique_ptr<sf::RenderWindow> window_;
     sf::RenderWindow *window_;
-    City city_;
+    City* city_;
     sf::Event event_;
     sf::Clock clock_;
     float dt_;
     std::vector<Vehicle*> vehicles_;
+    std::vector<int> hours_passed_;
    
 };
 
