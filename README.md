@@ -1,11 +1,13 @@
 
 
-#Following packets are required for this program:
+#Requirements:
+Packets required: (Install with apt-get for example)
+```bash
 cmake g++ libsfml-dev python3-dev python3-pip
-
-#Using matplotlibcpp requires matplot being installed to your python3 environment:
-
-```pip3 install matplotlib
+```
+Also using matplotlibcpp requires matplot being installed to your python3 environment:
+```bash
+pip3 install matplotlib
 ```
 
 #Instruction to buils
