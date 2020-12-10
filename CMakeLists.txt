@@ -5,7 +5,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "Do not build in-source. Please remove CMakeCache.txt and the CMakeFiles/ directory. Then build out-of-source.")
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 #IF you use your own of SFML uncomment these:
 # set(SFML_INCLUDE_DIR "/home/vin/download/SFML-2.5.1-Compiled/include")

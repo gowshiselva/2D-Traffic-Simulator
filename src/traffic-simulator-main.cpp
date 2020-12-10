@@ -12,7 +12,7 @@
 #include "input2json.hpp"
 #include <stdio.h>
 #include <iostream>
-
+#include <memory>
 #define SPEED 2
 
 using namespace std;
@@ -73,6 +73,7 @@ using namespace std;
       } else if(time == leave_work_time) {
         city.SetPassengerPosition(passenger.GetId(), "travel_home");
         Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+        car->setColor(sf::Color::Blue);
         car->SetDestination(passenger.GetHome());
         path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
         car->SetPath(path);
@@ -155,6 +156,7 @@ using namespace std;
     }
     
   }
+
 }
 
 
