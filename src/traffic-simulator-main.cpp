@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <iostream>
 
+#define SPEED 2
+
 using namespace std;
  int main(int argc, char *argv[])
 {
@@ -51,34 +53,28 @@ using namespace std;
   while(tf.getWindow()->isOpen()) {
     tf.update();
     for(auto passenger: city.GetPassengers()) {
+      //std::cout << passenger.GetPosition() << std::endl;
+      //std::cout << passenger.GetLeaveHomeTime() << std::endl;
+      //std::cout << passenger.GetLeaveWorkTime() << std::endl;
       int leave_home_time = passenger.GetLeaveHomeTime();
       int leave_work_time = passenger.GetLeaveWorkTime();
+
       if(time == leave_home_time) {
-        if(passenger.GetPosition() == "home") {
-          passenger.SetPosition("travelling");
-          passenger.LeaveBuilding("home");
-          /* ENTER CAR */
-          Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
-          car->SetDestination(passenger.GetWorkplace());
-          path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
-          car->SetPath(path);
-          tf.addVehicle(car);
-        } else {
-          ;
-        }
+        Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
+        car->SetDestination(passenger.GetWorkplace());
+        std::cout << passenger.GetHome().GetCoordinates().x << "," << passenger.GetHome().GetCoordinates().y << std::endl;
+        std::cout << car->GetDestination().GetCoordinates().x << "," << car->GetDestination().GetCoordinates().y << std::endl;
+        path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        car->SetPath(path);
+        tf.addVehicle(car);
+
       } else if(time == leave_work_time) {
-        if(passenger.GetPosition() == "workplace") {
-          passenger.LeaveBuilding("workplace");
-          passenger.SetPosition("travelling");
-          /* ENTER CAR */
-          Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
-          car->SetDestination(passenger.GetHome());
-          path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
-          car->SetPath(path);
-          tf.addVehicle(car);
-        } else {
-          ;
-        }
+        Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+        car->SetDestination(passenger.GetHome());
+        path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        car->SetPath(path);
+        tf.addVehicle(car);
+
       }
     }
     
@@ -95,15 +91,15 @@ using namespace std;
           Intersection intersection = path[i];
           if(intersection.GetId() == car->GetLastIntersection().GetId()) {
             if(car->GetDrivingFromBuilding() == true) {
-              car->DriveFromBuilding(1,car->GetStart(),car->GetLastIntersection());
+              car->DriveFromBuilding(SPEED,car->GetStart(),car->GetLastIntersection());
               break;
             }
             if(i>=path.size()-1) {
-              car->DriveToBuilding(1,car->GetLastIntersection(),car->GetDestination());
+              car->DriveToBuilding(SPEED,car->GetLastIntersection(),car->GetDestination());
               break;
             }
             Intersection next_intersection = path[i+1];
-            bool reached_next = car->Drive(1,car->GetLastIntersection(),next_intersection);
+            bool reached_next = car->Drive(SPEED,car->GetLastIntersection(),next_intersection);
             if (reached_next == true) {
               car->SetLastIntersection(next_intersection);
             }
@@ -112,22 +108,24 @@ using namespace std;
         }
         //car.UpdatePosition  
       }else{
-        //car->GetPassenger().EnterBuilding("");
+        /*if(car->GetPassenger().GetPosition() == "travelling_home") {
+          car->GetPassenger().EnterBuilding("home");
+        } else if(car->GetPassenger().GetPosition() == "travelling_to_workplace") {
+          car->GetPassenger().EnterBuilding("workplace");
+        }*/
+        
         tf.removeVehicle(car);
       }
       
     }
-
-    for(auto car: tf.getVehicles()){
-      std::cout << car->GetCoordinates().x << "," << car->GetCoordinates().y << std::endl;
-    }
     
     if(time>=1439) {
       time = 0;
-      usleep(20000);
+      usleep(30000);
     } else {
       time++;
-      usleep(20000);
+      std::cout << time << std::endl;
+      usleep(30000);
     }
     
   }

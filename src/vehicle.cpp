@@ -198,15 +198,21 @@ void Vehicle::DriveFromBuilding(int speed, Building start, Intersection end) {
 std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, std::vector<std::shared_ptr<Intersection>> intersections, std::vector<SideRoad> side_roads, std::vector<MainRoad> main_roads) {
   Intersection start_intersection;
   Intersection end_intersection;
+
+  if(start.GetId() == end.GetId()) {
+    std::cout << "Same id" << std::endl;
+  }
   
   // First replace start and end buildings with their neighbor intersections.
   for (auto intersection: intersections) {
     if (intersection->GetId() == start.GetNeighborIntersection(side_roads).GetId()) {
       start_intersection= *intersection;
-    } else if (intersection->GetId() == end.GetNeighborIntersection(side_roads).GetId()) {
+    }
+    if (intersection->GetId() == end.GetNeighborIntersection(side_roads).GetId()) {
       end_intersection = *intersection;
     }
   }
+
   this->SetStart(start);
   this->SetLastIntersection(start_intersection);
   this->SetDrivingFromBuilding(true);
@@ -226,8 +232,11 @@ std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, s
     path = queue.front();
     queue.pop();
     last_node = path.back();
+    visited.push_back(last_node);
     
     // Check if found end.
+    std::cout<< last_node.GetId() << std::endl;
+    std::cout<< end_intersection.GetId() << std::endl;
     if (last_node.GetId() == end_intersection.GetId()) {
       return path;
     }
@@ -247,12 +256,13 @@ std::vector<Intersection> Vehicle::CalculatePath(Building start, Building end, s
         new_path.push_back(neighbor);
         queue.push(new_path);
       }
+      visited_bool = false;
     }
 
-    visited_bool = false;
+    
 
   }
-
+  std::cout << "NO PATH FOUND" << std::endl;
   // If no path found return empty vector.
   std::vector<Intersection> empty;
   return empty;
