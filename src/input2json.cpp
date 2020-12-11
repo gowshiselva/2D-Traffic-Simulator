@@ -38,32 +38,11 @@ int GenerateLeaveWork() {
 }
 
 float RandomNumberGenerator() {
-    //std::srand(std::time(nullptr));  // set seed for rand function
     float rand_num = static_cast <float> (rand()) / static_cast <float> (RAND_MAX); // random number between 0 and 1
     return rand_num;
 }
 
-/* int GetRoadStatus(int x, int y, std::string direction, int map_size, int step_size) { // 0...free, 1...occupied, 2...not available
-    if (direction == "n") {
-        if (y - step_size < 0) {
-            return 2;
-        }
-    } else if (direction == "e") {
-        if (x + step_size >= map_size) {
-            return 2;
-        }
-    } else if (direction == "s") {
-        if (y + step_size >= map_size) {
-            return 2;
-        }
-    } else {
-        if (x - step_size < 0) {
-            return 2;
-        }
-    }
-    return 0;
-} */
-
+/*Used in generating the roads&intersections skeleton. Step size is the distance between intersections.*/
 int StepX(std::string direction, int x, int step_size) {
     if(direction == "e") {
         return(x+step_size);
@@ -84,6 +63,7 @@ int StepY(std::string direction, int y, int step_size) {
     }
 }
 
+/*Used in generating the roads&intersections skeleton.*/
 std::string ChooseDirection(json intersection) {
     std::vector<std::string> directions;
         if(intersection["road_directions"]["n"] == 0) {
@@ -120,6 +100,7 @@ int ChooseRandomIndexFromJsonArray(json json_array) {
     return rand;
 }
 
+/*Full intersection is an intersection with four roads - one in each direction.*/
 int ChooseRandomNonfullIntersection(json intersections) {
     bool found = false;
     while(!found) {
@@ -134,13 +115,7 @@ int ChooseRandomNonfullIntersection(json intersections) {
     return -1;
 }
 
-/* int CalculateMapSize(int city_size) {
-    //int map_size = 10+city_size;
-    //map_size = static_cast<int>(std::round(map_size*(60-density/2)));
-    int map_size = 300+6*city_size;
-    return(map_size);
-} */
-
+/*Either returns coresponding string to a number, or generates type randomly. Just a helper function.*/
 std::string GenerateBuildingType(int building_number) {
     if(building_number == 0) {
         return "residential";
@@ -159,6 +134,7 @@ std::string GenerateBuildingType(int building_number) {
     }
 }
 
+/*Used in generating the roads&intersections skeleton. Helper function.*/
 std::string ReverseDirection(std::string direction) {
     if (direction == "n") {
         return "s";
@@ -171,6 +147,7 @@ std::string ReverseDirection(std::string direction) {
     }
 }
 
+/*Used to get the city size to make the displayed window dynamic size.*/
 std::map<std::string,int> FindCoordsRange(json buildings, json intersections) {
     int max_x = 0, max_y = 0, min_x = 99999, min_y = 99999;
 
@@ -210,20 +187,7 @@ std::map<std::string,int> FindCoordsRange(json buildings, json intersections) {
     return(coordinates_ranges);
 }
 
-/* coordinates GenerateBuildingCoordinates(int city_size, int buildings_amount, int building_number) {
-    int rows = static_cast<int>(std::round(sqrt(buildings_amount)));
-    int cols = static_cast<int>(std::ceil(buildings_amount/rows));
-    int row = static_cast<int>(std::floor(building_number/rows));
-    int col = static_cast<int>(building_number%cols);
-    int x_rand = static_cast<int>(std::floor(city_size/cols*RandomNumberGenerator()));
-    int y_rand = static_cast<int>(std::floor(city_size/rows*RandomNumberGenerator()));
-    int x_lower = static_cast<int>(std::floor(city_size/cols*col));
-    int y_lower = static_cast<int>(std::floor(city_size/rows*row));
-    coordinates coords;
-    coords.x = x_rand+x_lower;
-    coords.y = y_rand+y_lower;
-    return coords;
-} */
+/*Used in generating the roads&intersections skeleton. Helper function*/
 coordinates GenerateBuildingCoordinates(int x, int y, std::string direction, int step_size) {
     coordinates coords;
     if (direction == "n") {
@@ -242,6 +206,9 @@ coordinates GenerateBuildingCoordinates(int x, int y, std::string direction, int
     return coords;
 }
 
+/*This is the important part.*/
+/*Here we generate a skeleton comprising of intersections and roads.*/
+/*I won't go into detail - it's a trade secret.*/
 json GenerateSkeleton(int city_size) {
     int intersections_amount = static_cast<int>(std::ceil(city_size/2))+2;
     int step_size = static_cast<int>(std::floor(30+2000/(10+intersections_amount)));
@@ -250,7 +217,7 @@ json GenerateSkeleton(int city_size) {
     json base_road;
     json base_roads;
 
-    // First create one intersection in the middle of the grid.
+    /*Create base intersection.*/
     intersection["id"] = 0;
     intersection["coordinates"]["x"] = intersections_amount*step_size;
     intersection["coordinates"]["y"] = intersections_amount*step_size;
@@ -260,6 +227,7 @@ json GenerateSkeleton(int city_size) {
     intersection["road_directions"]["w"] = 0;
     intersections.push_back(intersection);
 
+    /*Generate given amount of intersections.*/
     while (static_cast<int>(static_cast<int>(intersections.size())) < intersections_amount) {
         int existing_intersection_index = ChooseRandomNonfullIntersection(intersections);
         try {
@@ -272,6 +240,7 @@ json GenerateSkeleton(int city_size) {
         } 
         json& existing_intersection = intersections[existing_intersection_index];
 
+        /*Generate and keep track of connections between the intersections.*/
         std::string direction = ChooseDirection(existing_intersection);
         existing_intersection["road_directions"][direction] = 1;
         base_road["id"] = base_roads.size();
@@ -296,16 +265,6 @@ json GenerateSkeleton(int city_size) {
                 break;
             }
         }
-        /* for(auto intersect: intersections) {
-            if(intersect["coordinates"]["x"] == new_x && intersect["coordinates"]["y"] == new_y) {
-                occupied = true;
-                base_road["end_x"] = intersect["coordinates"]["x"];
-                base_road["end_y"] = intersect["coordinates"]["y"];
-                base_road["end"] = intersect["id"];
-                
-                break;
-            }
-        } */
 
         if(!occupied) {
             intersection["id"] = intersections.size();
@@ -379,6 +338,8 @@ json GenerateSkeleton(int city_size) {
     return output;
 }
 
+/*This is the function used outside of this file. It calls the generate skeleton stuff and then
+uses the skeleton to generate buildings. It also handles passengers. The output is a json file.*/
 void input2json(void) {
     std::srand(std::time(nullptr));  // set seed for rand function
     
@@ -396,11 +357,6 @@ void input2json(void) {
     std::string line;
     std::string line_str;
     int line_int;
-
-    /* if (!input_file_stream) {
-        std::cerr << "Unable to open file input_file.txt";
-        exit(1);   
-    } */
 
     while (std::getline(input_file_stream,line))
     {
@@ -490,8 +446,8 @@ void input2json(void) {
                     industrial_buildings.push_back(building["id"]);
                 }
 
-                building["people_capacity"] = 1000; // Provisional...
-                building["car_capacity"] = 1000; // Provisional...
+                building["people_capacity"] = 1000; // Provisional - we decided not to use capacities in the end.
+                building["car_capacity"] = 1000; // Provisional - we decided not to use capacities in the end.
                 output["buildings"].push_back(building);
 
                 // Create road connecting the building with the intersection.

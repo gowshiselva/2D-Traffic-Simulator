@@ -19,6 +19,7 @@ using json = nlohmann::json;
 #include "timeschedule.h"
 #include "City.hpp"
 
+/*Take the json file and generate objects. Outputs a city object containing all the other objects.*/
 City json2city(bool user_input, std::string json_user_input) {
 
     std::ifstream json_file;
@@ -34,6 +35,9 @@ City json2city(bool user_input, std::string json_user_input) {
             std::cerr << "Generated JSON file opening failed." << std::endl;
         }
     }
+    /* We use this one big try and catch block, because there is so many ways the json file could be altered for the function not
+    to work, that it is much simpler to just give up trying to deal with different errors. When the file is faulty it's not used and
+    instead a new one is generated. The generated file always works.*/
     try {
         json json_input = json::parse(json_file);
         
