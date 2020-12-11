@@ -243,9 +243,8 @@ coordinates GenerateBuildingCoordinates(int x, int y, std::string direction, int
 }
 
 json GenerateSkeleton(int city_size) {
-    int intersections_amount = city_size+2;
+    int intersections_amount = static_cast<int>(std::ceil(city_size/2))+2;
     int step_size = static_cast<int>(std::floor(30+2000/(10+intersections_amount)));
-    std::cout << step_size << std::endl;
     json intersection;
     json intersections;
     json base_road;
@@ -386,6 +385,13 @@ void input2json(void) {
     /* First read lines from input file to a vector of pairs. */
     std::ifstream input_file_stream;
     input_file_stream.open("../src/input_file.txt", std::ios::in);
+    if(!input_file_stream)
+    {
+        std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << std::endl;
+        std::cout << "Error: Input file not found. Please create an input_file.txt file in the src folder." << std::endl;
+        std::cout << "Default input will be used." << std::endl;
+        std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << std::endl;
+    } 
     std::vector<std::pair<std::string, int>> lines;
     std::string line;
     std::string line_str;
@@ -398,11 +404,21 @@ void input2json(void) {
 
     while (std::getline(input_file_stream,line))
     {
-        line_str = line.substr(0, line.find(" "));
-        line_int = std::stoi(line.substr(line.find(" ")));
-        std::pair<std::string, int> line_pair = std::make_pair(line_str, line_int);
-        if(line_str.size() > 0) {
-            lines.push_back(line_pair);
+        if(!line.empty()) {
+            try {
+                line_str = line.substr(0, line.find(" "));
+                line_int = std::stoi(line.substr(line.find(" ")));
+            } catch (const std::out_of_range& e) {
+                std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << std::endl;
+                std::cout << "Error: " << "Some part of input file has incorrect format." << std::endl;
+                std::cout << "Only part of input or default input will be used." << std::endl;
+                std::cout << "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << std::endl;
+                break;
+            }
+            std::pair<std::string, int> line_pair = std::make_pair(line_str, line_int);
+            if(line_str.size() > 0) {
+                lines.push_back(line_pair);
+            }
         }
     }
     input_file_stream.close();
@@ -418,16 +434,28 @@ void input2json(void) {
         
         if(object=="Size" || object=="size") {
             if(amount <= 0) {
+                std::cout << "---------------------------------------------------" << std::endl;
+                std::cout << "Warning: " << "City size is too small, has been set to 1." << std::endl;
+                std::cout << "---------------------------------------------------" << std::endl;
                 amount = 1; 
             } else if(amount > 100) {
+                std::cout << "---------------------------------------------------" << std::endl;
+                std::cout << "Warning: " << "Size of the city exceeded the limit (100) and has been set to 100." << std::endl;
+                std::cout << "---------------------------------------------------" << std::endl;
                 amount = 100;
             }
             amounts_struct.city_size = amount;
         } else if(object=="Passengers" || object=="passengers") {
             if(amount <= 0) {
+                std::cout << "---------------------------------------------------" << std::endl;
+                std::cout << "Warning: " << "Not enough passengers, number of passengers has been set to 1." << std::endl;
+                std::cout << "---------------------------------------------------" << std::endl;
                 amount = 1; 
-            } else if(amount > 10000) {
-                amount = 10000;
+            } else if(amount > 1000) {
+                std::cout << "---------------------------------------------------" << std::endl;
+                std::cout << "Warning: " << "Number of passengers exceeded the limit (1000) and has been set to 1000." << std::endl;
+                std::cout << "---------------------------------------------------" << std::endl;
+                amount = 1000;
             }
             amounts_struct.passengers = amount;
         }

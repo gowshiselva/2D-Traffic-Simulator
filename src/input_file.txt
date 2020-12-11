@@ -1,2 +1,2 @@
+Passengers 100
 Size 20
-Passengers 200

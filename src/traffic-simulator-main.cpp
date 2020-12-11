@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <memory>
-#define SPEED 2
+#define SPEED 4
 
 using namespace std;
  int main(int argc, char *argv[])
@@ -54,48 +54,54 @@ using namespace std;
     tf.update();
     for(uint16_t j=0; j<city.GetPassengers().size(); j++) {
       Passenger passenger = city.GetPassengers()[j];
-      int leave_home_time = passenger.GetLeaveHomeTime();
-      int leave_work_time = passenger.GetLeaveWorkTime();
+      int go_work_time = passenger.GetLeaveHomeTime();
+      int go_home_time = passenger.GetLeaveWorkTime();
 
-      if(time == leave_home_time) {
+      if(time == go_work_time && (passenger.GetPosition() == "home" || passenger.GetPosition() == "shop")) {
         city.SetPassengerPosition(passenger.GetId(), "travel_work");
         Vehicle* car = new Vehicle(passenger.GetHome().GetCoordinates(), passenger);
         car->setColor(sf::Color::Red);
         car->SetDestination(passenger.GetWorkplace());
-        //std::cout << passenger.GetHome().GetCoordinates().x << "," << passenger.GetHome().GetCoordinates().y << std::endl;
-        //std::cout << car->GetDestination().GetCoordinates().x << "," << car->GetDestination().GetCoordinates().y << std::endl;
-        path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        if(passenger.GetPosition() == "home") {
+          path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        } else {
+          car->SetCoordinates(passenger.GetShop().GetCoordinates());
+          path = car->CalculatePath(passenger.GetShop(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        }
         car->SetPath(path);
         tf.addVehicle(car);
 
-      } else if(time == leave_work_time) {
+      } else if(time == go_home_time && (passenger.GetPosition() == "work" || passenger.GetPosition() == "shop")) {
         city.SetPassengerPosition(passenger.GetId(), "travel_home");
         Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
         car->setColor(sf::Color::Blue);
         car->SetDestination(passenger.GetHome());
-        path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        if(passenger.GetPosition() == "work") {
+          path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        } else {
+          car->SetCoordinates(passenger.GetShop().GetCoordinates());
+          path = car->CalculatePath(passenger.GetShop(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+        }
         car->SetPath(path);
         tf.addVehicle(car);
 
       } else {
         if((passenger.GetPosition() == "work" || passenger.GetPosition() == "home") && passenger.GetShop().GetId() != passenger.GetWorkplace().GetId()) {
           float rand = RandomNumberGenerator();
-        if (static_cast<int>(rand*1000) == 42) {
-          city.SetPassengerPosition(passenger.GetId(), "travel_shop");
-
-          Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
-          car->setColor(sf::Color(11,111,0));
-          if(passenger.GetPosition() == "work") {
+          if (static_cast<int>(rand*1000) == 42) {
+            city.SetPassengerPosition(passenger.GetId(), "travel_shop");
+            Vehicle* car = new Vehicle(passenger.GetWorkplace().GetCoordinates(), passenger);
+            car->setColor(sf::Color(11,111,0));
             car->SetDestination(passenger.GetShop());
-            path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
-          } else {
-            car->SetCoordinates(passenger.GetHome().GetCoordinates());
-            car->SetDestination(passenger.GetShop());
-            path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+            if(passenger.GetPosition() == "work") {
+              path = car->CalculatePath(passenger.GetWorkplace(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+            } else {
+              car->SetCoordinates(passenger.GetHome().GetCoordinates());
+              path = car->CalculatePath(passenger.GetHome(), car->GetDestination() , city.GetIntersections(), city.GetSideRoads(), city.GetMainRoads());
+            }
+            car->SetPath(path);
+            tf.addVehicle(car);
           }
-          car->SetPath(path);
-          tf.addVehicle(car);
-        }
         }
       }
     }
