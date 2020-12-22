@@ -12,7 +12,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <memory>
-#define SPEED 4
+
+#define SPEED 2
+
 
 using namespace std;
  int main(int argc, char *argv[])
